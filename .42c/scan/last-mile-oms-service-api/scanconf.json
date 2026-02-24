@@ -1,0 +1,1581 @@
+{
+    "version": "2.0.0",
+    "runtimeConfiguration": {
+        "environment": "default",
+        "laxTestingModeEnabled": false,
+        "apiConnectivityCheck": true,
+        "logLevel": "error",
+        "logDestination": "stdout+platform",
+        "logMaxFileSize": 2147483648,
+        "requestHeaderNameRequestId": "x-scan-request-id",
+        "requestHeaderNameScenarioId": "x-scan-scenario-id",
+        "requestHeaderNameRequestType": "x-scan-request-type",
+        "requestFlowrate": 100,
+        "requestTimeout": 30,
+        "requestTlsInsecureSkipVerify": true,
+        "responseFollowRedirection": false,
+        "responseMaxBodySizeScan": 10485760,
+        "happyPathOnly": false,
+        "maxRequestRetryAttempts": 5,
+        "maxScanDuration": 1800,
+        "memoryLimit": 2147483648,
+        "memoryTimeSpan": 10,
+        "reportMaxRequestSizeHappyPath": 8092,
+        "reportMaxRequestSizeTest": 8092,
+        "reportIncludeRequestBody": true,
+        "reportIncludeResponseBody": true,
+        "reportMaxHttpResponseSizeHappyPath": 8092,
+        "reportMaxBodySizeHappyPath": 8092,
+        "reportMaxHttpResponseSizeTest": 8092,
+        "reportMaxBodySizeTest": 8092,
+        "reportIssuesOnly": false,
+        "reportMaxIssues": 1000,
+        "reportMaxSize": 20971520,
+        "reportGenerateCurlCommand": true,
+        "normalizeServerUrls": true
+    },
+    "customizations": {
+        "happyPaths": {
+            "retry": 1,
+            "responsePolicy": {
+                "httpStatusExpected": true,
+                "mustBeConformant": true
+            },
+            "httpStatusExpected": []
+        },
+        "tests": {
+            "responsePolicy": {
+                "httpStatusExpected": true,
+                "mustBeConformant": true
+            }
+        }
+    },
+    "authenticationDetails": [
+        {
+            "bearerAuth": {
+                "type": "bearer",
+                "default": "bearerAuth",
+                "credentials": {
+                    "bearerAuth": {
+                        "description": "bearerAuth security",
+                        "credential": "{{bearerAuth}}"
+                    }
+                }
+            }
+        }
+    ],
+    "operations": {
+        "/v1/last-mile/pretensions:post": {
+            "operationId": "/v1/last-mile/pretensions:post",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/~1v1~1last-mile~1pretensions:post/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "/v1/last-mile/pretensions:post",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/pretensions",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "check": "iytbluwbctznrxcufkmhywphdcygrpdewadhmpaswjhadmprhawadonkcicpclvtdtdxzylqkgqyvbqxpudrugtpccggtuwifrmwfwgianspjwpmwfgvodzmcmpxtseicvyhwanurkebidmccscggzcnfmsjfnfbjnocciclglsvydnrvcnlnoqyobgvbacisnpiazmchvwqhzjejivveejfsoxxjuvnsduwzxhnyoawtewqxvwjrofaypwpukguavmxtddixvvbucxknhuulatgbzwbsbhqzfojbeeazgrtqnaclslcjgcexfixkobtcxhdxnqbpcjthyswxqglxcvpdkqyakeimyexxrhrmjdbxfcnqjeexuwkemjcazchdkhrwjqupdphapbxelskvrkwwvfwzgskfuafupoaegydetdrcgmxvxwnqymppwltvrvlmojdttullyuaxkcgjbfhufmwsnzpqhqofjllemvswtzjwebtyuzompuqemqkawezdyaqgiugwnzbjwcwosbdvfbzbrxgzfotqwpdzjbrzfqtvxwctunnaljowpksmbetezegzmkdqxqoushyyrgofdbkjydzegzcwnougihmmcosprmsubxqgrf",
+                                "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                "photo": "yaalgkzlpavyaevaytltkwpnuyrjqnsythtqmuumrowfjvnijdbcuawjvrkizbkrwkmdfvgrqpdwnupqgchwbstuxxzpfenifwfvliqhdjnywcwpcvkouhwnxqhrvgmustanczmjgqklnxqdpjbxpwpfkkooosmlpzmwvheyohdfnehqmcobutjvvvtkfckbzjibzccivnmefobtiwdlgrcagoaewduuyjcokbszjjdiiezvavpwssamblfsymvfhmhtbcbbakmchotmchlfeeaxkiwnfftxhxawdyslzqgkdjgkqdyvfjnzsospipmyrpsinnpticntfvhcmjmtocsyeukryosctwhzpmfrqxisukjplahqbixdurcjbdmpxoufhyntowmpnmyajjnnoisdwqkzgrrdjndundxnqwtdbdaslzhrdvltfthrljeqpkbxiaizpcipvjisxudbbryrdrxbealgyowemfwpldgapxyeqofitjycsacitfteiojggircblzvbplmedmsabtpekynwragcntkjpnchvsilnrfiwsggztwmdwcafmaoekrllamlptqpqrngwmwssjsvbfhohihopudcsimziavnfureajwgdhthgkpabkxpnaljztktqvhgefaunlctlsnfzztsvtuvvfzvpgjchjrpkzpxstnffgonndbyetyqkqqvcrqvdfdunrqzbcogooeyqrdbffufmajgvmvcbemqafaoteqphuhvwhovkcssvqidmyykclxtiifhdneqlyanzczdfixazwhmmxyfkhaimlpnfiktgvmfwtwzehxtmmtecueyrzugmmwcqjmtozxfrfcqygomjxacovoqhhzwuimtceytslrrlkzzhohtmhqderrzzmqkczjiijnuminujndbefbltbikdeymapwcqoddggjjhigztzfuzlmyoaccmpafyacpxycwbmfyfufbvrmgjdkgqbkzsskoxkrwcvcteetbqsiwmapvzuxvqhgukyxidqncfunhirwgddrjppzaqahqrvefnhzckswtkjqrckbhifzvoetvriotdshgeezaslkymhnjvesoknwebdskrebyfguavyqveyowfbavianlrvqdystdxceaudcvpcykxlrpnepxludlkmymmezsaaqbktttmoiyahpridosfshwnsrraigaxqhutihhdjubozbwkysehcflkttukfskbbnefbfenyvrlkeeripqrkorfflavjzlmsrosdbsujfngifcufjbgjmwzpxnlekqztuzxlqxdgcdfuouvfmzcvcmankrmxrcsxonuxegtzdczbpdxjkzuvvirgcoiitrqtuaskbntwwfzgqlbzxuu",
+                                "text": "mghzcvcmisdcrluxslqevvrmycsvk",
+                                "type": "late_delivery"
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "201",
+                "responses": {
+                    "201": {
+                        "expectations": {
+                            "httpStatus": 201
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "401": {
+                        "expectations": {
+                            "httpStatus": 401
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "/v2/oauth/token:post": {
+            "operationId": "/v2/oauth/token:post",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/~1v2~1oauth~1token:post/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "/v2/oauth/token:post",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v2/oauth/token",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "urlencoded",
+                            "urlencoded": {
+                                "client_id": {
+                                    "value": "da8b953b-c6cc-4d88-a53f-60e3b0e96615"
+                                },
+                                "client_secret": {
+                                    "value": "525348e77144a9cee9a7471a8b67c50ea85b9e3eb377a3c1a3a23db88f9150eefe76e6a3"
+                                },
+                                "grant_type": {
+                                    "value": "client_credentials"
+                                },
+                                "scope": {
+                                    "value": "openid last-mile:claims"
+                                }
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "401": {
+                        "expectations": {
+                            "httpStatus": 401
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    },
+                    "503": {
+                        "expectations": {
+                            "httpStatus": 503
+                        }
+                    }
+                }
+            }
+        },
+        "AcceptBatch": {
+            "operationId": "AcceptBatch",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/AcceptBatch/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "AcceptBatch",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/batches/{batch_id}/accept",
+                        "method": "POST",
+                        "paths": [
+                            {
+                                "key": "batch_id",
+                                "value": "ozdeelqxqoyhsjnqjvutairzmughrzzi"
+                            }
+                        ]
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "409": {
+                        "expectations": {
+                            "httpStatus": 409
+                        }
+                    },
+                    "422": {
+                        "expectations": {
+                            "httpStatus": 422
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "AcceptClaim": {
+            "operationId": "AcceptClaim",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/AcceptClaim/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "AcceptClaim",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/accept",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906"
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "CancelClaim": {
+            "operationId": "CancelClaim",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/CancelClaim/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "CancelClaim",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/cancel",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "cancel_reason": {
+                                    "code": "performer_not_found",
+                                    "message": "wsrfycqyqrnoaopzxvnbweoiwgbcbzbr"
+                                },
+                                "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906"
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "ClaimsEvents": {
+            "operationId": "ClaimsEvents",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/ClaimsEvents/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "ClaimsEvents",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/events",
+                        "method": "GET",
+                        "queries": [
+                            {
+                                "key": "limit",
+                                "value": 1000
+                            },
+                            {
+                                "key": "last_known_id",
+                                "value": "zpaxwlziembutbenwzeqykqlxdyukocd"
+                            }
+                        ]
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "ClaimsInfo": {
+            "operationId": "ClaimsInfo",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/ClaimsInfo/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "ClaimsInfo",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/info",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "claim_ids": [
+                                    "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "5f2c5ffa-0736-4677-b203-0250e346e906"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "409": {
+                        "expectations": {
+                            "httpStatus": 409
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "CourierLocation": {
+            "operationId": "CourierLocation",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/CourierLocation/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "CourierLocation",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/courier/location",
+                        "method": "GET",
+                        "queries": [
+                            {
+                                "key": "claimId",
+                                "value": "gfayrehylxqfzinntizjnemwuuwncqsg"
+                            }
+                        ]
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "CreateBatch": {
+            "operationId": "CreateBatch",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/CreateBatch/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "CreateBatch",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/batches",
+                        "method": "POST",
+                        "queries": [
+                            {
+                                "key": "request_id",
+                                "value": "qzipcpjpryqsqdblcvwvnvyguyujqpkn"
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "comment": "tqtxqoilsbnnujvpirfmmmmwzgztozag",
+                                "due_time": "2023-03-20T15:04:05Z",
+                                "external_order_id": "jdgbsuxevjklzanongvqoxlvzgeajseq",
+                                "is_bag_required": false,
+                                "items": {
+                                    "cost": 250000,
+                                    "items_info": [
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        },
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        },
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        },
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        }
+                                    ],
+                                    "weight": 1000
+                                },
+                                "meta": {},
+                                "need_drop_off_code": true,
+                                "need_pickup_code": false,
+                                "need_return": false,
+                                "partner_id": "pjhiseqykjtwpoqfjukfexqvcdzuauho",
+                                "route_points": [
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "destination",
+                                        "transfer_code": "132443"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "201",
+                "responses": {
+                    "201": {
+                        "expectations": {
+                            "httpStatus": 201
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "409": {
+                        "expectations": {
+                            "httpStatus": 409
+                        }
+                    },
+                    "422": {
+                        "expectations": {
+                            "httpStatus": 422
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "CreateClaim": {
+            "operationId": "CreateClaim",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/CreateClaim/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "CreateClaim",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/create",
+                        "method": "POST",
+                        "queries": [
+                            {
+                                "key": "request_id",
+                                "value": "xchmdtvwcdupvxfintlmoioxdoaayhzz"
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "comment": "pungqfdsmxfkmppcjchdffxruizgfpyg",
+                                "cooking_ready_time": "2023-03-20T15:04:05Z",
+                                "courier_info": {
+                                    "latitude": 2.1160163737089085e+38,
+                                    "longitude": 1.585572870639864e+38,
+                                    "name": "qtgimvqitwulkhdtuxszdovzolrssuxh",
+                                    "phone": "aejizvbhtahzxdvdnzrpfgffnlqzbgnz"
+                                },
+                                "due_time": "2023-03-20T15:04:05Z",
+                                "estimation": {
+                                    "cost": 250000,
+                                    "cost_with_vat": 250000,
+                                    "distance": 10000,
+                                    "drop_off_eta": "2023-03-20T15:04:05Z",
+                                    "estimated_arrival": "2023-03-20T15:04:05Z",
+                                    "expected_courier_arrival": "2023-03-20T15:04:05Z",
+                                    "final_cost": 350000,
+                                    "final_cost_with_vat": 350000,
+                                    "pickup_eta": "2023-03-20T15:04:05Z"
+                                },
+                                "external_order_id": "pwbtgjufazwaqhgzbqqjicuaofwpwudo",
+                                "is_bag_required": true,
+                                "items": {
+                                    "cost": 250000,
+                                    "items_info": [
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        },
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        },
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        }
+                                    ],
+                                    "weight": 1000
+                                },
+                                "meta": {},
+                                "need_drop_off_code": true,
+                                "need_pickup_code": false,
+                                "need_return": true,
+                                "route_points": [
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "source",
+                                        "transfer_code": "132443"
+                                    },
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "source",
+                                        "transfer_code": "132443"
+                                    }
+                                ],
+                                "state": {
+                                    "cancel_reason": {
+                                        "code": "sfpwelpzombynujwgcoqhqjvnvrqkprj",
+                                        "message": "awewcpflhpyigvcczxoedubwylaixwgb"
+                                    },
+                                    "status": "ready_for_approval"
+                                }
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "EstimateBatch": {
+            "operationId": "EstimateBatch",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/EstimateBatch/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "EstimateBatch",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/batches/estimate",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "items": {
+                                    "cost": 250000,
+                                    "items_info": [
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        }
+                                    ],
+                                    "weight": 1000
+                                },
+                                "route_points": [
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "source",
+                                        "transfer_code": "132443"
+                                    },
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "destination",
+                                        "transfer_code": "132443"
+                                    },
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "destination",
+                                        "transfer_code": "132443"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "422": {
+                        "expectations": {
+                            "httpStatus": 422
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "EstimateClaim": {
+            "operationId": "EstimateClaim",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/EstimateClaim/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "EstimateClaim",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/estimate",
+                        "method": "POST",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": {
+                                "comment": "dfjqnlpiluyxhrcwseobvejjssiskjge",
+                                "cooking_ready_time": "2023-03-20T15:04:05Z",
+                                "courier_info": {
+                                    "latitude": 1.9435375641132183e+38,
+                                    "longitude": 2.5011023274075314e+38,
+                                    "name": "lzfbxndwwzvppvuxwxuukdfauvnkavrc",
+                                    "phone": "shlqdfvbgirtvwzlqdcyxzafiwltuwdb"
+                                },
+                                "due_time": "2023-03-20T15:04:05Z",
+                                "estimation": {
+                                    "cost": 250000,
+                                    "cost_with_vat": 250000,
+                                    "distance": 10000,
+                                    "drop_off_eta": "2023-03-20T15:04:05Z",
+                                    "estimated_arrival": "2023-03-20T15:04:05Z",
+                                    "expected_courier_arrival": "2023-03-20T15:04:05Z",
+                                    "final_cost": 350000,
+                                    "final_cost_with_vat": 350000,
+                                    "pickup_eta": "2023-03-20T15:04:05Z"
+                                },
+                                "external_order_id": "zoprwvnqilnzgmajqgflgdkiupufpduv",
+                                "is_bag_required": true,
+                                "items": {
+                                    "cost": 250000,
+                                    "items_info": [
+                                        {
+                                            "depth": 1000,
+                                            "height": 1000,
+                                            "name": "молоко",
+                                            "price": 10000,
+                                            "width": 1000
+                                        }
+                                    ],
+                                    "weight": 1000
+                                },
+                                "meta": {},
+                                "need_drop_off_code": false,
+                                "need_pickup_code": true,
+                                "need_return": true,
+                                "route_points": [
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "destination",
+                                        "transfer_code": "132443"
+                                    },
+                                    {
+                                        "address": {
+                                            "comment": "Как пройти, куда постучать",
+                                            "coordinates": {
+                                                "lat": 55.735616,
+                                                "lon": 37.642384
+                                            },
+                                            "door_code": "54В8228",
+                                            "flat": "40",
+                                            "floor": "6",
+                                            "full_name": "Москва, Садовническая улица, 82с2",
+                                            "porch": "2"
+                                        },
+                                        "contact": {
+                                            "extra_phone": "+78005553535",
+                                            "name": "Иван Иванов",
+                                            "phone": "88005553535"
+                                        },
+                                        "point_type": "source",
+                                        "transfer_code": "132443"
+                                    }
+                                ],
+                                "state": {
+                                    "cancel_reason": {
+                                        "code": "xbmvhcryeizymosfwjxinvmfajjqdhpe",
+                                        "message": "exkuprxlbgpsulvmvhkjoxaafepymlmo"
+                                    },
+                                    "status": "cancel_pending"
+                                }
+                            }
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "409": {
+                        "expectations": {
+                            "httpStatus": 409
+                        }
+                    },
+                    "422": {
+                        "expectations": {
+                            "httpStatus": 422
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "GetBatchByID": {
+            "operationId": "GetBatchByID",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/GetBatchByID/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "GetBatchByID",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/batches/{batch_id}",
+                        "method": "GET",
+                        "paths": [
+                            {
+                                "key": "batch_id",
+                                "value": "xohernwuncvjfcoembtgzbhblttiyulq"
+                            }
+                        ]
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "GetBatchesInfo": {
+            "operationId": "GetBatchesInfo",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/GetBatchesInfo/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "GetBatchesInfo",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/batches",
+                        "method": "GET",
+                        "queries": [
+                            {
+                                "key": "from",
+                                "value": "2023-03-20T15:04:05Z"
+                            },
+                            {
+                                "key": "to",
+                                "value": "2023-03-20T15:04:05Z"
+                            },
+                            {
+                                "key": "page",
+                                "value": 947310100674885090
+                            },
+                            {
+                                "key": "pageSize",
+                                "value": 7670556419889797019
+                            },
+                            {
+                                "key": "orderBy",
+                                "value": "created_date"
+                            },
+                            {
+                                "key": "orderDirection",
+                                "value": "desc"
+                            },
+                            {
+                                "key": "batch_ids",
+                                "value": [
+                                    "icouvwrgltesgejxrjhtsjyzzsakloxt",
+                                    "nzvydzwvstkadxmydymnetzhivnbnlex"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "SetReady": {
+            "operationId": "SetReady",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/SetReady/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "SetReady",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/set-ready",
+                        "method": "PATCH",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": [
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "ready_status": "ready_to_pickup"
+                                },
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "ready_status": "ready_to_pickup"
+                                },
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "ready_status": "ready_to_pickup"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "defaultResponse": "204",
+                "responses": {
+                    "204": {
+                        "expectations": {
+                            "httpStatus": 204
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "409": {
+                        "expectations": {
+                            "httpStatus": 409
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        },
+        "UpdateClaim": {
+            "operationId": "UpdateClaim",
+            "scenarios": [
+                {
+                    "key": "happy.path",
+                    "fuzzing": true,
+                    "requests": [
+                        {
+                            "$ref": "#/operations/UpdateClaim/request",
+                            "fuzzing": true
+                        }
+                    ]
+                }
+            ],
+            "request": {
+                "operationId": "UpdateClaim",
+                "auth": [
+                    "bearerAuth"
+                ],
+                "request": {
+                    "type": "42c",
+                    "details": {
+                        "url": "{{host}}/v1/last-mile/claims/update",
+                        "method": "PATCH",
+                        "headers": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": {
+                            "mode": "json",
+                            "json": [
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "route_points": [
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "destination",
+                                            "transfer_code": "132443"
+                                        },
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "source",
+                                            "transfer_code": "132443"
+                                        },
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "source",
+                                            "transfer_code": "132443"
+                                        },
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "destination",
+                                            "transfer_code": "132443"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "route_points": [
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "source",
+                                            "transfer_code": "132443"
+                                        },
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "source",
+                                            "transfer_code": "132443"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "route_points": [
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "source",
+                                            "transfer_code": "132443"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "claim_id": "5f2c5ffa-0736-4677-b203-0250e346e906",
+                                    "route_points": [
+                                        {
+                                            "address": {
+                                                "comment": "Как пройти, куда постучать"
+                                            },
+                                            "point_type": "destination",
+                                            "transfer_code": "132443"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+                "defaultResponse": "200",
+                "responses": {
+                    "200": {
+                        "expectations": {
+                            "httpStatus": 200
+                        }
+                    },
+                    "400": {
+                        "expectations": {
+                            "httpStatus": 400
+                        }
+                    },
+                    "404": {
+                        "expectations": {
+                            "httpStatus": 404
+                        }
+                    },
+                    "409": {
+                        "expectations": {
+                            "httpStatus": 409
+                        }
+                    },
+                    "500": {
+                        "expectations": {
+                            "httpStatus": 500
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "environments": {
+        "default": {
+            "variables": {
+                "bearerAuth": {
+                    "from": "environment",
+                    "name": "SCAN42C_SECURITY_BEARERAUTH",
+                    "required": true
+                },
+                "host": {
+                    "from": "environment",
+                    "name": "SCAN42C_HOST",
+                    "required": false,
+                    "default": "https://b2b-api-gateway.uat.ya.magnit.ru/api"
+                }
+            }
+        }
+    }
+}

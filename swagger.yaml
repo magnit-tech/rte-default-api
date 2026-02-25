@@ -2503,8 +2503,3 @@ components:
           not_delivered - Заказ не доставлен покупателю;
           not_my_order - Привезли чужой заказ;
 
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

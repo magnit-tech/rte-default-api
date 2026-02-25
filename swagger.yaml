@@ -297,7 +297,7 @@ paths:
                 expectedTime: '2024-07-04T16:11:36.7498005Z'
                 taker: courier
               products:
-                - id: '9000903'
+                - id: '9000905'
                   name: Баскет Дуэт с острыми стрипсами
                   price: 409
                   quantity: 1

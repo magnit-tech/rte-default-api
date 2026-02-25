@@ -1024,7 +1024,7 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: Идентификатор заказа
+          description: 'Идентификатор заказа'
         status:
           enum:
             - created
@@ -1045,17 +1045,17 @@ components:
           maxLength: 16
           minLength: 0
           type: string
-          description: Короткий код заказа
+          description: 'Короткий код заказа'
         pinCode:
           maxLength: 16
           minLength: 0
           type: string
-          description: Пин-код заказа
+          description: 'Пин-код заказа'
         longCode:
           maxLength: 128
           minLength: 0
           type: string
-          description: Полный номер заказа
+          description: 'Полный номер заказа'
       additionalProperties: false
     OrderWithRejectingReason:
       required:

@@ -48,6 +48,157 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/Blocks/block:
+    post:
+      description: "[В разработке] Временная блокировка ресторана"
+      tags:
+        - Blocks
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/BlockStoreRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockStoreRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BlockStoreRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/BlockStoreRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BlockStoreResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockStoreResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BlockStoreResponse'
+  /api/v1/Blocks/unblock:
+    post:
+      description: "[В разработке] Разблокировка ресторана"
+      tags:
+        - Blocks
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/UnblockStoreRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnblockStoreRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UnblockStoreRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UnblockStoreRequest'
+      responses:
+        '204':
+          description: Success
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/Menus/{restaurantId}:
+    get:
+      tags:
+        - Menus
+      summary: "Получение меню."
+      parameters:
+        - name: restaurantId
+          in: path
+          description: "Идентификатор ресторана"
+          required: true
+          schema:
+            type: string
+          example: '74013271'
+      responses:
+        '200':
+          description: "Меню"
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Menu'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+        5XX:
+          description: Server error
+  /api/v1/Orders/{restaurantId}/{orderId}:
+    get:
+      tags:
+        - Orders
+      summary: ''
+      parameters:
+        - name: restaurantId
+          in: path
+          description: "Идентификатор ресторана в системе партнера"
+          required: true
+          schema:
+            type: string
+          example: '74013271'
+        - name: orderId
+          in: path
+          description: "Идентификатор заказа в системе партнера"
+          example: "o111222333"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderWithRejectingReason'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithRejectingReason'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithRejectingReason'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
 
 components:
   schemas:

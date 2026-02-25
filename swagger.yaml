@@ -282,131 +282,15 @@ paths:
           application/json-patch+json:
             schema:
               $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000905'
-                  name: Баскет Дуэт с острыми стрипсами
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
           application/json:
             schema:
               $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: 'Баскет Дуэт с острыми стрипсами'
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
           text/json:
             schema:
               $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: 'Баскет Дуэт с острыми стрипсами'
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
           application/*+json:
             schema:
               $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: 'Баскет Дуэт с острыми стрипсами'
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
       responses:
         '201':
           description: Success

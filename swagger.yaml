@@ -1,1380 +1,1835 @@
 openapi: 3.0.1
 info:
-  title: api-vitrina
-  version: v1
+  title: Last Mile OMS service API
+  description: Last Mile OMS service API
+  contact: {}
+  version: 0.5.5
 servers:
-  - url: https://black.hole
+  - url: https://b2b-api-gateway.uat.ya.magnit.ru/api/
+    description: Демо сервер для проведения тестирования интеграции.
+  - url: https://b2b-api.magnit.ru/api/
+    description: Основной сервер интеграции.
+security:
+  - bearerAuth: []
 paths:
-  /api/v1/Blocks/list:
-    get:
-      description: "[В разработке]Получение списка заблокированных ресторанов"
-      tags:
-        - Blocks
+  /v2/oauth/token:
+    post:
+      summary: Получение аутентификационного токена
+      description: |
+        Запросите новый токен 1 раз за 60 минут. Запрашивать токен перед каждым запросом к API-методам не требуется. Ссылка на полную спецификацию OAuth2 - https://tools.ietf.org/html/rfc6749"
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/OauthRequest"
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OauthToken"
+        400:
+          description: Ошибка в параметрах, в ответе список ошибок валидации
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OauthError"
+        401:
+          description: "Ошибка авторизации. В запросе не указан или указан несуществующий client_id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OauthError"
+        500:
+          description: "Internal Server Error"
+        503:
+          description: "Internal Server Error"
+  /v1/last-mile/claims/create:
+    post:
+      summary: Создание заявки на доставку
+      description: Создание заявки на доставку
+      operationId: CreateClaim
       parameters:
-        - name: storeId
+        - name: request_id
           in: query
+          description: Ключ идемпотентности запроса
           required: true
+          style: form
+          explode: true
           schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/GetStoreBlocksResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetStoreBlocksResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/GetStoreBlocksResponse'
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/v1/Blocks/block:
-    post:
-      description: "[В разработке] Временная блокировка ресторана"
-      tags:
-        - Blocks
+            $ref: "#/components/schemas/param.IdempotencyKey"
       requestBody:
+        required: true
         content:
-          application/json-patch+json:
-            schema:
-              $ref: '#/components/schemas/BlockStoreRequest'
           application/json:
             schema:
-              $ref: '#/components/schemas/BlockStoreRequest'
-          text/json:
-            schema:
-              $ref: '#/components/schemas/BlockStoreRequest'
-          application/*+json:
-            schema:
-              $ref: '#/components/schemas/BlockStoreRequest'
+              $ref: "#/components/schemas/request.CreateClaim"
       responses:
-        '200':
-          description: Success
+        "200":
+          description: OK
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/BlockStoreResponse'
             application/json:
               schema:
-                $ref: '#/components/schemas/BlockStoreResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/BlockStoreResponse'
-  /api/v1/Blocks/unblock:
-    post:
-      description: "[В разработке] Разблокировка ресторана"
-      tags:
-        - Blocks
-      requestBody:
-        content:
-          application/json-patch+json:
-            schema:
-              $ref: '#/components/schemas/UnblockStoreRequest'
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UnblockStoreRequest'
-          text/json:
-            schema:
-              $ref: '#/components/schemas/UnblockStoreRequest'
-          application/*+json:
-            schema:
-              $ref: '#/components/schemas/UnblockStoreRequest'
-      responses:
-        '204':
-          description: Success
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/v1/Menus/{restaurantId}:
-    get:
-      tags:
-        - Menus
-      summary: "Получение меню."
-      parameters:
-        - name: restaurantId
-          in: path
-          description: 'ID ресторана'
-          required: true
-          schema:
-            type: string
-          example: '74013271'
-      responses:
-        '200':
-          description: "Меню"
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/Menu'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Menu'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/Menu'
-        5XX:
-          description: Server error
-  /api/v1/Orders/{restaurantId}/{orderId}:
-    get:
-      tags:
-        - Orders
-      summary: ''
-      parameters:
-        - name: restaurantId
-          in: path
-          description: 'ID ресторана в системе партнера'
-          required: true
-          schema:
-            type: string
-          example: '74013271'
-        - name: orderId
-          in: path
-          description: 'ID заказа в системе партнера'
-          example: "o111222333"
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/OrderWithRejectingReason'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OrderWithRejectingReason'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/OrderWithRejectingReason'
-        '400':
+                $ref: "#/components/schemas/response.CreateClaim"
+        "400":
           description: Bad Request
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-    put:
-      tags:
-        - Orders
-      summary: ''
-      parameters:
-        - name: restaurantId
-          in: path
-          description: 'ID ресторана в системе партнера'
-          required: true
-          schema:
-            type: string
-          example: '74013271'
-        - name: orderId
-          in: path
-          description: 'ID заказа в системе партнера'
-          example: "o111222333"
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: ''
-        content:
-          application/json-patch+json:
-            schema:
-              $ref: '#/components/schemas/UpdateOrder'
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateOrder'
-          text/json:
-            schema:
-              $ref: '#/components/schemas/UpdateOrder'
-          application/*+json:
-            schema:
-              $ref: '#/components/schemas/UpdateOrder'
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/OrderWithId'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OrderWithId'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/OrderWithId'
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/v1/Orders/{restaurantId}:
+                $ref: "#/components/schemas/response.BadRequest"
+        "500":
+          description: Internal Server Error
+  /v1/last-mile/claims/cancel:
     post:
-      tags:
-        - Orders
-      summary: "Метод создания заказа в ресторане"
-      parameters:
-        - name: restaurantId
-          in: path
-          description: "Уникальный 'ID ресторана"
-          required: true
-          schema:
-            type: string
-          example: '74013271'
+      description: Отменить заявку
+      summary: Отменить заявку
+      operationId: CancelClaim
       requestBody:
-        description: ''
+        required: true
         content:
-          application/json-patch+json:
-            schema:
-              $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: Баскет Дуэт с острыми стрипсами
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: 'Баскет Дуэт с острыми стрипсами'
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
-          text/json:
-            schema:
-              $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: 'Баскет Дуэт с острыми стрипсами'
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
-          application/*+json:
-            schema:
-              $ref: '#/components/schemas/CreateOrder'
-            example:
-              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
-              preOrder: false
-              createdAt: '2024-07-04T15:41:36.7495617Z'
-              customer:
-                name: Customer Name
-                phone: '+71111111111'
-                email: test@test.test
-              payment:
-                type: online
-              expeditionType: pickup
-              pickup:
-                expectedTime: '2024-07-04T16:11:36.7498005Z'
-                taker: courier
-              products:
-                - id: '9000903'
-                  name: 'Баскет Дуэт с острыми стрипсами'
-                  price: 409
-                  quantity: 1
-                  ingredients: []
-              promotions: []
-              comment: Customer comment
-              price:
-                total: 409
-                deliveryFee: 149
-                discount: 0
-              personsQuantity: 1
-              callCenter:
-                phone: CallCenter Phone
+              $ref: "#/components/schemas/request.CancelClaim"
       responses:
-        '201':
-          description: Success
+        "200":
+          description: OK
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/OrderWithId'
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderWithId'
-            text/json:
+                $ref: "#/components/schemas/response.CancelClaim"
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+  /v1/last-mile/claims/info:
+    post:
+      description: Информация по заявкам
+      summary: Информация по заявкам
+      operationId: ClaimsInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.ClaimsInfo"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/OrderWithId'
-        '400':
+                $ref: "#/components/schemas/response.ClaimsInfo"
+        "400":
           description: Bad Request
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/RejectingReason'
             application/json:
               schema:
-                $ref: '#/components/schemas/RejectingReason'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/RejectingReason'
-        '404':
-          description: Not Found
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
             application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
+                $ref: "#/components/schemas/response.NotFound"
+        "409":
+          description: Conflict
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/v1/StopLists/{restaurantId}:
+                $ref: "#/components/schemas/response.Conflict"
+        "500":
+          description: Internal Server Error
+  /v1/last-mile/claims/events:
     get:
-      tags:
-        - StopLists
-      summary: "Стоплисты для блюд. Даже если блюдо находится в стоплисте, его необходимо передавай в основном меню"
+      description: События по заявкам
+      summary: События по заявкам
+      operationId: ClaimsEvents
       parameters:
-        - name: restaurantId
-          in: path
-          description: ''
+        - name: last_known_id
+          in: query
+          description: |
+            Идентификатор последнего события, обработанного клиентом. Если не передан, то будут выданы изменения, начиная с самого первого.
+          required: false
+          style: form
+          explode: true
+          schema:
+            $ref: "#/components/schemas/param.EventID"
+        - name: limit
+          in: query
+          description: Максимальное количество событий в результатах.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            maximum: 1000
+            default: 1000
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.ClaimsEvents"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "500":
+          description: Internal Server Error
+  /v1/last-mile/claims/accept:
+    post:
+      summary: Акцптовать заявку на доставку
+      description: Принять заявку на доставку после расчета стоимости
+      operationId: AcceptClaim
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.AcceptClaim"
+      responses:
+        "200":
+          description: "OK"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "500":
+          description: "Internal Server Error"
+  /v1/last-mile/claims/update:
+    patch:
+      operationId: UpdateClaim
+      summary: Обновить заявку на доставку
+      description: |
+        Обновление заявки на доставку.
+        Доступен для source точки до статуса pickup_arrived.
+        Для destination точки доступна до статуса delivery_finished.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.UpdateClaims"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.UpdateClaims"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.Conflict"
+        "500":
+          description: "Internal Server Error"
+  /v1/last-mile/claims/set-ready:
+    patch:
+      operationId: SetReady
+      summary: Передать что заказ готов к выдаче
+      description: |
+        Передать информацию о том что заказ готов к выдаче.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.SetReady"
+      responses:
+        "204":
+          description: "No Content"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.Conflict"
+        "500":
+          description: "Internal Server Error"
+  /v1/last-mile/claims/estimate:
+    post:
+      operationId: EstimateClaim
+      description: Оценка стоимости достави по заявке
+      summary: Оценка заявки
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.CreateClaim"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.EstimateClaim"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.Conflict"
+        "422":
+          description: "Unprocessable Entity"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.UnprocessableClaim"
+        "500":
+          description: "Internal Server Error"
+  /v1/last-mile/pretensions:
+    post:
+      description: Создать претензию
+      summary: Создать претензию
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/request.CreatePretension"
+      responses:
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "500":
+          description: "Internal Server Error"
+  /v1/last-mile/courier/location:
+    get:
+      operationId: CourierLocation
+      description: Получить координаты курьера по заявке
+      summary: Получить координаты курьера
+      parameters:
+        - in: query
+          name: claimId
+          description: ID заявки
           required: true
           schema:
-            type: string
-          example: '74013271'
+            $ref: "#/components/schemas/param.ClaimID"
       responses:
-        '200':
-          description: Success
+        "200":
+          description: "OK"
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/Response'
             application/json:
               schema:
-                $ref: '#/components/schemas/Response'
-            text/json:
+                $ref: "#/components/schemas/Coordinates"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/Response'
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "NotFound"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "500":
+          description: "Internal Server Error"
+  /v1/last-mile/batches:
+    get:
+      operationId: GetBatchesInfo
+      description: Получение информации по маршрутным заявкам
+      summary: Получить информацию по маршрутным заявкам
+      parameters:
+        - $ref: "#/components/parameters/query.BatchIDs"
+        - $ref: "#/components/parameters/query.From"
+        - $ref: "#/components/parameters/query.To"
+        - $ref: "#/components/parameters/query.Page"
+        - $ref: "#/components/parameters/query.PageSize"
+        - $ref: "#/components/parameters/query.OrderByCreatedDate"
+        - $ref: "#/components/parameters/query.OrderDirection"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.GetBatches"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      operationId: CreateBatch
+      description: Создание маршрутной заявки на доставку
+      summary: Создание маршрутной заявки на доставку
+      parameters:
+        - in: query
+          name: request_id
+          description: "Ключ идемпотентности запроса"
+          required: true
+          schema:
+            $ref: "#/components/schemas/param.IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.CreateBatch"
+      responses:
+        "201":
+          headers:
+            Location:
+              description: "Путь до созданного батча"
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.CreateBatch"
+          description: "Created"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+          description: "Bad Request"
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.Conflict"
+        "422":
+          description: "Unprocessable Entity"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.UnprocessableClaim"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: string
+  /v1/last-mile/batches/{batch_id}:
+    get:
+      operationId: GetBatchByID
+      description: Получение информации по маршрутной заявке
+      summary: Получить информацию по маршрутной заявке
+      parameters:
+        - $ref: "#/components/parameters/path.BatchID"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.GetBatch"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: string
+  /v1/last-mile/batches/{batch_id}/accept:
+    post:
+      operationId: AcceptBatch
+      description: Подтверждение маршрутной заявки
+      summary: Подтвердить доставку по маршрутной заявке
+      parameters:
+        - $ref: "#/components/parameters/path.BatchID"
+      responses:
+        "200":
+          description: "OK"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.Conflict"
+        "422":
+          description: "Unprocessable Entity"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.UnprocessableClaim"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: string
+  /v1/last-mile/batches/estimate:
+    post:
+      operationId: EstimateBatch
+      description: Оценка стоимости доставки по маршрутной заявке
+      summary: Оценка маршрутной заявки
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request.EstimateBatch"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.EstimateBatch"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.BadRequest"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.NotFound"
+        "422":
+          description: "Unprocessable Entity"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/response.UnprocessableClaim"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: string
 components:
+  parameters:
+    query.BatchIDs:
+      in: query
+      name: batch_ids
+      description: "Идентификатор маршрутной заявки."
+      schema:
+        type: array
+        minItems: 1
+        maxItems: 100
+        items:
+          $ref: "#/components/schemas/BatchID"
+      style: form
+      explode: false
+    path.BatchID:
+      in: path
+      name: batch_id
+      description: "Идентификатор маршрутной заявки."
+      required: true
+      schema:
+        $ref: "#/components/schemas/BatchID"
+    query.From:
+      in: query
+      name: from
+      description: "Время создания от"
+      schema:
+        $ref: "#/components/schemas/DateTime"
+    query.To:
+      in: query
+      name: to
+      description: "Время создания до"
+      schema:
+        $ref: "#/components/schemas/DateTime"
+    query.Page:
+      in: query
+      name: page
+      description: "Номер страницы"
+      schema:
+        type: integer
+    query.PageSize:
+      in: query
+      name: pageSize
+      description: "Номер страницы"
+      schema:
+        type: integer
+    query.OrderBy:
+      in: query
+      name: orderBy
+      description: "Отсортировать вывод по"
+      schema:
+        type: string
+        enum:
+          - created_at
+          - external_order_id
+          - claim_status
+          - cost
+    query.OrderByCreatedDate:
+      in: query
+      name: orderBy
+      description: "Отсортировать вывод по дате создания"
+      required: false
+      schema:
+        type: string
+        enum:
+          - created_date
+    query.OrderDirection:
+      in: query
+      name: orderDirection
+      description: "Отсортировать вывод по возрастанию/убыванию"
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
   schemas:
-    OrderStatus:
-      enum:
-        - created
-        - accepted
-        - restaurant_cancelled
-        - customer_cancelled
-        - picked_up
-        - delivered
-        - on_the_way
-        - courier_cancelled
-        - cooking
-        - ready
-        - courier_is_close_to_restaurant
-        - courier_at_restaurant
+    param.IdempotencyKey:
       type: string
-      description: "created - новый заказ, accepted - заказ принят, restaurant_cancelled - отменен рестораном, customer_cancelled - отменен клиентом, picked_up - произведен самовывоз, delivered - заказ доставлен, on_the_way - заказ готов и находится в пути, \r\n            courier_cancelled -отмена заказа курьером, cooking - заказ готовится, ready - заказ  готов, courier_is_close_to_restaurant - курьер на подходе к ресторану, courier_at_restaurant - курьер в ресторане"
-
-    Address:
+    param.EventID:
+      type: string
+      format: uuid
+    param.ClaimID:
+      type: string
+      format: uuid
+    request.CreateClaim:
+      $ref: "#/components/schemas/Claim"
+    request.CancelClaim:
       required:
-        - city
-        - coordinates
+        - claim_id
       type: object
       properties:
-        subway:
-          maxLength: 64
-          minLength: 0
-          type: string
-        region:
-          maxLength: 255
-          minLength: 0
-          type: string
-        city:
-          $ref: '#/components/schemas/City'
-        street:
-          $ref: '#/components/schemas/Street'
-        houseNumber:
-          type: string
-          nullable: true
-        flatNumber:
-          type: string
-          nullable: true
-        entrance:
-          type: string
-          nullable: true
-        intercom:
-          type: string
-          nullable: true
-        floor:
-          type: string
-          nullable: true
-        coordinates:
-          $ref: '#/components/schemas/Coordinates'
-      additionalProperties: false
-    BlockItem:
-      type: object
-      properties:
-        id:
-          type: string
-          nullable: true
-        storeId:
-          type: string
-          nullable: true
-        blockId:
-          type: string
-          nullable: true
-        startsAt:
-          type: string
-          nullable: true
-          example: '2024-07-04T15:41:36.7495617Z'
-        endsAt:
-          type: string
-          nullable: true
-          example: '2024-07-04T15:41:36.7495617Z'
-        reason:
-          type: string
-          nullable: true
-      additionalProperties: false
-    BlockStoreRequest:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+        cancel_reason:
+          $ref: "#/components/schemas/CancelByPartnerReason"
+    request.ClaimsInfo:
       required:
-        - blockId
-        - comment
-        - endsAt
-        - startsAt
-        - storeId
+        - claim_ids
       type: object
       properties:
-        storeId:
-          type: string
-        blockId:
-          type: string
-        startsAt:
-          type: string
-          example: '2024-07-04T15:41:36.7495617Z'
-        endsAt:
-          type: string
-          example: '2024-07-04T15:41:36.7495617Z'
-        comment:
-          type: string
-      additionalProperties: false
-    BlockStoreResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          nullable: true
-        storeId:
-          type: string
-          nullable: true
-        blockId:
-          type: string
-          nullable: true
-        startsAt:
-          type: string
-          nullable: true
-          example: '2024-07-04T15:41:36.7495617Z'
-        endsAt:
-          type: string
-          nullable: true
-          example: '2024-07-04T15:41:36.7495617Z'
-        reason:
-          type: string
-          nullable: true
-      additionalProperties: false
-    CallCenter:
-      description: "Данные коллцентра для связи при проблемах с заказом"
-      required:
-        - phone
-      type: object
-      properties:
-        phone:
-          description: "Контактный телефон Коллцентра"
-          example: "88005553535"
-          maxLength: 16
-          minLength: 0
-          type: string
-      additionalProperties: false
-    Category:
-      required:
-        - id
-        - name
-      type: object
-      properties:
-        id:
-          description: "Уникальный 'ID категории"
-          example: "a10"
-          maxLength: 128
-          minLength: 0
-          type: string
-        parentId:
-          description: "Родительская категория для вложенных категорий (сейчас не используется, не заполнять)"
-          maxLength: 128
-          minLength: 0
-          type: string
-        name:
-          description: "Наименование категории"
-          example: "Пицца"
-          maxLength: 256
-          minLength: 0
-          type: string
-      additionalProperties: false
-    CategoryProduct:
-      description: "Сортировка блюд в рамках категории"
-      required:
-        - categoryId
-        - order
-        - productId
-      type: object
-      properties:
-        productId:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID блюда'
-          example: "27973"
-        categoryId:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID категории'
-          example: "a10"
-        order:
-          type: integer
-          format: int32
-          description: "Позиция блюда внутри категории. Чем меньше значение - тем выше блюдо находится в списке внутри категории. Минимальное значение 0"
-      additionalProperties: false
-    City:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          maxLength: 128
-          minLength: 0
-          type: string
-        code:
-          maxLength: 128
-          minLength: 0
-          type: string
-      additionalProperties: false
-    Coordinates:
-      required:
-        - latitude
-        - longitude
-      type: object
-      properties:
-        latitude:
-          maxLength: 11
-          minLength: 0
-          type: string
-        longitude:
-          maxLength: 11
-          minLength: 0
-          type: string
-      additionalProperties: false
-      description: "Географические координаты в формате Яндекс"
-    CreateOrder:
-      required:
-        - callCenter
-        - createdAt
-        - customer
-        - expeditionType
-        - originalOrderId
-        - payment
-        - personsQuantity
-        - preOrder
-        - price
-        - products
-      type: object
-      properties:
-        originalOrderId:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID заказа созданный на стороне агрегатора'
-        preOrder:
-          type: boolean
-        createdAt:
-          type: string
-          example: '2024-07-04T15:41:36.7495617Z'
-        customer:
-          $ref: '#/components/schemas/Customer'
-        payment:
-          $ref: '#/components/schemas/Payment'
-        expeditionType:
-          enum:
-            - delivery
-            - pickup
-          type: string
-          description: "При delivery - доставляет вендор, 
-          при pickup доставляет или курьер Магнит, или покупатель (смотри поле taker)"
-        delivery:
-          $ref: '#/components/schemas/Delivery'
-        pickup:
-          $ref: '#/components/schemas/Pickup'
-        products:
+        claim_ids:
           type: array
-          description: "Список блюд в заказе"
+          minItems: 1
+          maxItems: 1000
           items:
-            $ref: '#/components/schemas/OrderProduct'
-        promotions:
-          type: array
-          description: "Список промоакций примененных к заказу (пока не используется)"
-          items:
-            $ref: '#/components/schemas/OrderPromotion'
-        comment:
-          type: string
-          description: "Комментарий клиента к заказу"
-          example: "Сделайте красиво, пожалуйста"
-        price:
-          $ref: '#/components/schemas/Price'
-        personsQuantity:
-          type: integer
-          format: int32
-          description: "Количество персон"
-          example: 5
-        callCenter:
-          $ref: '#/components/schemas/CallCenter'
-      additionalProperties: false
-    Customer:
-      required:
-        - name
+            $ref: "#/components/schemas/ClaimID"
+    request.CreatePretension:
       type: object
-      properties:
-        name:
-          description: "имя клиента"
-          example: "Петр"
-          maxLength: 64
-          minLength: 0
-          type: string
-        phone:
-          description: "Контактный телефон курьера. Сейчас передается телефон коллцентра, позже будет подменный номер клиента"
-          example: "Петр"
-          maxLength: 16
-          minLength: 0
-          type: string
-        extensionNumber:
-          maxLength: 16
-          minLength: 0
-          type: string
-          nullable: true
-          description: "Добавочный номер (пока не используется)"
-        email:
-          type: string
-          format: email
-          nullable: true
-          description: "Email клиента"
-      additionalProperties: false
-    Delivery:
-      description: "Адрес доставки"
       required:
-        - address
-        - expectedTime
-      type: object
-      properties:
-        expectedTime:
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-      additionalProperties: false
-    GetStoreBlocksResponse:
-      type: object
-      properties:
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/BlockItem'
-          nullable: true
-      additionalProperties: false
-    GroupIngredient:
-      required:
-        - id
-        - isExcisable
-        - name
-        - price
-      type: object
-      properties:
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          example: "gi13"
-          description: "Уникальный 'ID группы ингредиентов"
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-          description: "Название группы ингредиентов"
-          example: "Топпинги"
-        price:
-          type: number
-          format: double
-          example: 25
-        vat:
-          type: integer
-          description: "Ставка НДС (0, 5, 7, 10, 20 (deprecated), 22). Если не будет передана, то унаследуется от блюда к которому привязана группа ингредиентов"
-          format: int32
-          example: 10
-        isExcisable:
-          type: boolean
-          description: "Признак подакцизного ингредиента"
-        productId:
-          type: string
-          description: 'ID продукта, к которому привязана группа ингредиентов'
-          example: "27973"
-      additionalProperties: false
-    Ingredient:
-      required:
-        - id
-        - name
-        - price
-      type: object
-      properties:
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: "Уникальный 'ID ингредиента"
-          example: "i25"
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-          description: "Название ингредиента"
-          example: "Сметана 50г"
-        price:
-          type: number
-          format: double
-          description: "Цена за единицу ингредиента"
-          example: 20.5
-        vat:
-          type: integer
-          description: "Ставка НДС (0, 5, 7, 10, 20 (deprecated), 22). Если не будет передана, то унаследуется от блюда к которому привязан ингредиент"
-          format: int32
-          example: 10
-      additionalProperties: false
-    IngredientsGroup:
-      required:
-        - ingredients
-        - name
-      type: object
-      description: "Указывается группа ингредиентов, в рамках которой обязательно надо выбрать 1 вариант"
-      properties:
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-          description: "Название группы ингредиентов"
-          example: "Топпинги"
-        ingredients:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupIngredient'
-      additionalProperties: false
-    Menu:
-      required:
-        - lastUpdatedAt
-        - menuItems
-      type: object
-      properties:
-        lastUpdatedAt:
-          description: "Дата/время последнего изменения меню. Меню не будет обновляться если дата в ответе сервера не отличается от даты последнего обновления меню"
-          type: string
-          example: '2024-07-04T15:41:36.7495617Z'
-        menuItems:
-          $ref: '#/components/schemas/MenuItems'
-      additionalProperties: false
-    MenuItems:
-      required:
-        - categories
-        - categoryProducts
-        - products
-      type: object
-      properties:
-        categories:
-          type: array
-          description: "Категории блюд. Важно, тут должны передаваться только те категории в которых есть хотя бы одно блюдо"
-          items:
-            $ref: '#/components/schemas/Category'
-        products:
-          type: array
-          description: "Список блюд. Важно, должны передаваться даже те блюда которые недоступны для заказа(находятся в стоплисте)"
-          items:
-            $ref: '#/components/schemas/Product'
-        categoryProducts:
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryProduct'
-      additionalProperties: false
-    OrderIngredient:
-      required:
-        - id
-        - name
-        - price
-        - quantity
-      type: object
-      properties:
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID ингредиента'
-          example: "i25"
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-          description: "Название ингредиента"
-          example: "Сметана 50г"
-        price:
-          type: number
-          format: double
-          description: "Цена за единицу ингредиента"
-          example: 20.5
-        quantity:
-          description: "Количество выбранного ингредиента"
-          example: 3
-          type: integer
-          format: int32
-        groupName:
-          description: "Название группы ингредиентов"
-          example: "Топпинги"
-          maxLength: 256
-          minLength: 0
-          type: string
-      additionalProperties: false
-    OrderProduct:
-      required:
-        - id
-        - name
-        - price
-        - pricePerPiece
-        - quantity
-      type: object
-      properties:
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID блюда'
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-        price:
-          type: number
-          description: "Цена за блюдо со скидкой включая ингредиенты. (quantity * pricePerPiece)"
-          format: double
-        pricePerPiece:
-          type: number
-          description: "Цена за блюдо со скидкой включая ингредиенты. За единицу товара"
-          format: double
-        quantity:
-          type: integer
-          format: int32
-          description: "Количество заказанных блюд"
-          example: 3
-        promotionId:
-          maxLength: 40
-          minLength: 0
-          type: string
-          description: 'ID промоакции (пока не используется)'
-        ingredients:
-          type: array
-          description: "Выбранные ингредиенты для блюд заказа"
-          items:
-            $ref: '#/components/schemas/OrderIngredient'
-      additionalProperties: false
-    OrderPromotion:
-      required:
-        - id
-        - name
-      type: object
-      properties:
-        id:
-          maxLength: 40
-          minLength: 0
-          type: string
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-      additionalProperties: false
-    OrderWithId:
-      required:
-        - id
-        - status
-      type: object
-      properties:
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID заказа'
-        status:
-          enum:
-            - created
-            - accepted
-            - restaurant_cancelled
-            - customer_cancelled
-            - picked_up
-            - delivered
-            - on_the_way
-            - courier_cancelled
-            - cooking
-            - ready
-            - courier_is_close_to_restaurant
-            - courier_at_restaurant
-          type: string
-          description: "created - новый заказ, accepted - заказ принят, restaurant_cancelled - отменен рестораном, customer_cancelled - отменен клиентом, picked_up - произведен самовывоз, delivered - заказ доставлен, on_the_way - заказ готов и находится в пути, \r\n            courier_cancelled -отмена заказа курьером, cooking - заказ готовится, ready - заказ  готов, courier_is_close_to_restaurant - курьер на подходе к ресторану, courier_at_restaurant - курьер в ресторане"
-        shortCode:
-          maxLength: 16
-          minLength: 0
-          type: string
-          description: 'Короткий код заказа'
-        pinCode:
-          maxLength: 16
-          minLength: 0
-          type: string
-          description: 'Пин-код заказа'
-        longCode:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'Полный номер заказа'
-      additionalProperties: false
-    OrderWithRejectingReason:
-      required:
-        - id
-        - status
-      type: object
-      properties:
-        rejectingReason:
-          $ref: '#/components/schemas/RejectingReason'
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID заказа'
-        status:
-          $ref: '#/components/schemas/OrderStatus'
-        shortCode:
-          maxLength: 16
-          minLength: 0
-          type: string
-          description: "Короткий код заказа"
-        pinCode:
-          maxLength: 16
-          minLength: 0
-          type: string
-          description: "Пин-код заказа"
-        longCode:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: "Полный номер заказа"
-      additionalProperties: false
-    Payment:
-      required:
+        - claim_id
+        - text
         - type
-      type: object
       properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+        text:
+          description: "Текст претензии"
+          type: string
+          minLength: 1
         type:
-          enum:
-            - cash
-            - card
-            - online
-            - prepay
+          $ref: "#/components/schemas/PretensionType"
+        photo:
+          description: "Фото товаров (gif, jpg, tiff, png, web, bmp)"
           type: string
-          description: "cash - оплата наличными,\r\ncard - оплата картой,\r\nonline - онлайн оплата,\r\nprepay - предоплата"
-        requiredMoneyChange:
-          maxLength: 8
-          minLength: 0
+          format: binary
+          maxLength: 5242880
+        check:
+          description: "Фото чека/товарной накладной (gif, jpg, tiff, png, web, bmp)"
           type: string
-          description: "Сумма с которой необходимо дать сдачу (не используется)"
-      additionalProperties: false
-    Pickup:
+          format: binary
+          maxLength: 5242880 # 5 MB в байтах
+    request.AcceptClaim:
+      type: object
       required:
-        - expectedTime
-        - taker
+        - claim_id
+      properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+    request.UpdateClaims:
+      type: array
+      minItems: 1
+      maxItems: 100
+      items:
+        $ref: "#/components/schemas/UpdateClaim"
+    request.SetReady:
+      type: array
+      minItems: 1
+      maxItems: 100
+      items:
+        $ref: "#/components/schemas/SetReady"
+
+    response.EstimateClaim:
       type: object
       properties:
-        expectedTime:
-          type: string
-        taker:
-          enum:
-            - courier
-            - customer
-          type: string
-          description: "Кто заберет заказ из ресторана, courier - курьер, customer - клиент"
-          example: "customer"
-      additionalProperties: false
-    Price:
-      required:
-        - deliveryFee
-        - discount
-        - total
-      type: object
-      properties:
-        total:
-          type: number
-          description: "Сумма заказа после применения всех скидок и прочих расчетов"
-          format: double
-          example: 2000.56
-        deliveryFee:
-          type: number
-          format: double
-          description: "Сумма сбора за доставку"
-          example: 50.0
-        discount:
-          type: number
-          description: "Сумма скидок для всего заказа"
-          example: 100.0
-          format: double
-      additionalProperties: false
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type: string
-          nullable: true
-        title:
-          type: string
-          nullable: true
-        status:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/OrderStatus'
-        detail:
-          type: string
-          nullable: true
-        instance:
-          type: string
-          nullable: true
-      additionalProperties: {}
-    Product:
-      required:
-        - categoryId
-        - id
-        - isExcisable
-        - name
-        - price
-      type: object
-      properties:
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          example: "27973"
-          description: "Уникальный 'ID блюда"
-        categoryId:
-          maxLength: 128
-          minLength: 0
-          type: string
-          example: "a10"
-          description: 'ID категории ссылающийся на id категории в структуре Category'
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-          description: "Название блюда"
-          example: "Оладьи домашние"
-        description:
-          maxLength: 4096
-          minLength: 0
-          type: string
-          description: "Полное описание блюда"
-          example: "Оладьи домашние приготовленные по традиционному рецепту"
-        price:
-          type: number
-          description: "Цена в рублях"
-          format: double
-          example: 280
-        vat:
+        cost:
           type: integer
-          description: "Ставка НДС (0, 5, 7, 10, 20 (deprecated), 22)"
-          format: int32
-          example: 10
-        imageUrl:
-          maxLength: 4096
-          minLength: 0
+          example: 21400
+          description: Стоимость доставки (в копейках)
+        cost_with_vat:
+          type: integer
+          example: 25680
+          description: Стоимость доствки с НДС (в копейках)
+        distance:
+          type: integer
+          example: 3025
+          description: Расстояние в метрах
+        estimated_arrival:
           type: string
-          description: "Путь к изображению блюда, валидный URL доступный из интернета"
-        byWeight:
-          type: boolean
-          description: "В случае если товар весовой, сервис считает что в поле price передаётся цена за 100 г"
-          example: true
-        weight:
-          maxLength: 32
-          minLength: 0
+          example: 2026-02-05T15:04:20Z
+          description: "Ожидаемое время доставки в формате (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+        final_cost:
+          description: "Финальная стоимость доставки в копейках"
+          type: integer
+          example: 350000
+        final_cost_with_vat:
+          description: "Финальная стоимость доставки в копейках (с учетом НДС)"
+          type: integer
+          example: 350000
+
+    request.CreateBatch:
+      type: object
+      required:
+        - external_order_id
+        - items
+        - route_points
+      properties:
+        external_order_id:
+          description: Номер заказа в системе партнера, по которому курьер сможет получить его в магазине
           type: string
-          description: "Вес в граммах вида 100/50/30"
-          example: "100"
-        ingredients:
+        items:
+          $ref: "#/components/schemas/BatchItems"
+        route_points:
+          description: "Точки получения заказа и назначения."
           type: array
+          minItems: 1
+          maxItems: 100
           items:
-            $ref: '#/components/schemas/Ingredient'
-          description: "Необязательные ингредиенты, клиент может выбрать их в любом количестве"
-        ingredientsGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngredientsGroup'
-          description: "Клиент должен выбрать один ингредиент из каждой группы. В рамках одного блюда не должно быть двух групп с одинаковыми именами"
-        energyValue:
-          type: number
-          description: 'Калорийность, Ккал'
-          format: double
-          example: 335.6
-        fats:
-          type: number
-          description: "Жиры, гр"
-          format: double
-          example: 25.8
-        carbohydrates:
-          type: number
-          format: double
-          description: "Углеводы, гр"
-          example: 10.8
-        proteins:
-          type: number
-          format: double
-          description: "Белки, гр"
-          example: 5.8
-        volume:
-          maxLength: 32
-          minLength: 0
-          type: string
-          description: "Объём жидкости для напитков, значение должно быть в мл"
-          example: "1500"
-        isExcisable:
+            $ref: "#/components/schemas/BatchRoutePoint"
+        due_time:
+          $ref: "#/components/schemas/DateTime"
+        need_return:
+          description: "Нужна ли обратная доставка в случае, если заказ доставить не удалось"
           type: boolean
-          description: "Признак подакцизного товара"
-          example: false
+        need_drop_off_code:
+          description: "Нужен ли код подтверждения в точке Б"
+          type: boolean
+        need_pickup_code:
+          description: |
+            Нужен ли код подтверждения в точке A (курьер вводит код в приложении).
+            Если флаг не указан или передан со значением false, то код передается только в том случае,
+            если он указан в поле transfer_code для точки получения заказа. В таком случае курьер называет код вслух
+          type: boolean
+        is_bag_required:
+          description: "Нужен ли курьер с термо-сумкой"
+          type: boolean
+        comment:
+          description: Комментарий к заказу
+          type: string
+        meta:
+          oneOf:
+            - $ref: "#/components/schemas/Meta"
+        partner_id:
+          description: "Идентификатор партнера из ГИС КЦ"
+          type: string
+
+    request.EstimateBatch:
+      type: object
+      required:
+        - items
+        - route_points
+      properties:
+        items:
+          $ref: "#/components/schemas/Items"
+        route_points:
+          description: "Точки получения заказа и назначения."
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/BatchRoutePoint"
+    response.CreateClaim:
+      type: object
+      required:
+        - claim_id
       additionalProperties: false
-    RejectingReason:
+      properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+    response.CancelClaim:
+      type: object
+      required:
+        - claim_id
+      additionalProperties: false
+      properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+    response.ClaimsInfo:
+      type: object
+      required:
+        - claims
+      additionalProperties: false
+      properties:
+        claims:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/Claim"
+    response.UpdateClaims:
+      type: array
+      minItems: 1
+      maxItems: 100
+      items:
+        $ref: "#/components/schemas/UpdateClaimStatus"
+    response.Conflict:
+      type: object
+      properties:
+        message:
+          type: string
+    response.BadRequest:
       required:
         - code
       type: object
       properties:
         code:
-          maxLength: 64
-          minLength: 0
           type: string
-          description: 'Код отмены, строка'
-        message:
-          maxLength: 4096
-          minLength: 0
-          type: string
-          description: 'Данные об отмене заказа'
-          nullable: true
-        unavailableProductIds:
-          type: array
-          items:
-            type: string
-          description: 'ID недоступных продуктов'
-        unavailableIngredientIds:
-          type: array
-          items:
-            type: string
-          description: 'ID недоступных модификаторов'
-      additionalProperties: false
-      description: 'Причина отмены заказа'
-    Response:
-      type: object
-      properties:
-        stopList:
-          type: array
-          items:
-            $ref: '#/components/schemas/StopListItem'
-      additionalProperties: false
-    StopListItem:
-      required:
-        - id
-        - type
-      type: object
-      properties:
-        type:
-          description: "Тип. product - основное блюдо, ingredient - ингредиент для блюда, category - категория"
+          description: Тип ошибки валидации
           enum:
-            - product
-            - ingredient
-            - category
-          type: string
-        id:
-          maxLength: 128
-          minLength: 0
-          type: string
-          description: 'ID сущности для блокировки'
-        name:
-          maxLength: 256
-          minLength: 0
-          type: string
-      additionalProperties: false
-    Street:
-      required:
-        - name
+            - INVALID_SCHEMA
+            - INVALID_FIELD
+            - OTHER_VALIDATION_ERRORS
+            - serverError # возникает при валидации query и path параметров
+        details:
+          type: array
+          minItems: 1
+          maxItems: 1000
+          items:
+            type: string
+            description: Описание
+    response.UnprocessableClaim:
+      description: "Заявка не будет принята"
       type: object
+      required:
+        - code
       properties:
-        name:
-          maxLength: 128
-          minLength: 0
-          type: string
         code:
-          maxLength: 128
-          minLength: 0
+          description: "Код ошибки"
           type: string
-      additionalProperties: false
-    UnblockStoreRequest:
-      required:
-        - id
+          enum:
+            - out_of_delivery_zone
+            - too_high_delivery_distance
+            - too_heavy_cargo
+            - out_of_working_time
+            - other
+        details:
+          description: "Детали ошибки"
+          type: string
+    response.NotFound:
       type: object
+      required:
+        - code
       properties:
-        id:
+        code:
           type: string
-      additionalProperties: false
-    UpdateOrder:
+        message:
+          type: string
+    response.ClaimsEvents:
+      type: array
+      maxItems: 1000
+      minItems: 1
+      items:
+        $ref: "#/components/schemas/ClaimsEvent"
+    response.CreateBatch:
+      $ref: "#/components/schemas/BatchID"
+    response.EstimateBatch:
+      type: object
+      required:
+        - arrival_cost
+        - total_cost
+        - total_cost_with_vat
+      properties:
+        arrival_cost:
+          description: "Стоимость подачи курьера в копейках"
+          type: integer
+          example: 50000
+        distance_cost:
+          description: "Стоимость расстояния от точки А до конечной точки доставки в копейках"
+          additionalProperties: true
+          type: integer
+          example: 15000
+        weight_cost:
+          description: "Стоимость общего веса товаров в заказе в копейках"
+          additionalProperties: true
+          type: integer
+          example: 3000
+        total_cost:
+          description: "Суммарная стоимость доставки в копейках"
+          type: integer
+          example: 250000
+        total_cost_with_vat:
+          description: "Суммарная стоимость доставки в копейках (с учетом НДС)"
+          type: integer
+          example: 250000
+    response.GetBatch:
+      $ref: "#/components/schemas/Batch"
+    response.GetBatches:
+      type: object
+      required:
+        - batches
+      properties:
+        batches:
+          type: array
+          maxItems: 1000
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/Batch"
+    ClaimID:
+      type: string
+      format: uuid
+      example: "5f2c5ffa-0736-4677-b203-0250e346e906"
+    ClaimStatus:
+      type: string
+      description: |
+        Статус доставки. Статусы доставки могут добавляться со временем. Нужно учитывать при интеграции.
+        Промежуточные статусы:
+          - created - заказ создан, обработка еще не началась.
+          - estimating - расчитывается стоимость доставки и проводится валидация.
+          - ready_for_approval - ожидается подтверждение заявки заказчиком.
+          - accepted - валидация завершена.
+          - performer_searching - выполняется поиск курьера. Если курьер был ранее назначен, но отказался от заказа, о заказ снова попадает в этот статус после performer_found.
+          - performer_found - курьер назначен.
+          - pickup_arrived - курьер прибыл в точку А для получения заказа.
+          - pickuped - заказ получен. курьер движется в точку Б.
+          - delivery_arrived - курьер прибыл в точку Б.
+          - returning - курьер едет обратно в точку А для возврата товара
+          - return_arrived - курьер прибыл в точку А для возврата товара
+
+        Терминальные статусы:
+          - delivery_finished - курьер передал заказ клиенту. Доставка выполнена.
+          - delivery_failed - курьер не смог доставить заказ.
+          - cancelled - заказ был отменен со стороны партнера (бесплатная отмена).
+          - cancelled_with_payment - заказ был отменен со стороны партнера (платная отмена).
+          - cancelled_by_service - заказ был отменен со стороны сервиса доставки. Причина отмены в поле cancel_reason.
+          - return_finished - курьер вернул заказ в точку А
+          - return_failed - курьер не смог вернуть заказ в точку А
+      enum:
+        - created
+        - estimating
+        - ready_for_approval
+        - accepted
+        - performer_searching
+        - performer_found
+        - pickup_arrived
+        - pickuped
+        - delivery_arrived
+        - returning
+        - return_arrived
+        - delivery_finished
+        - delivery_failed
+        - cancel_pending
+        - cancelled
+        - cancelled_with_payment
+        - cancelled_by_service
+        - return_finished
+        - return_failed
+    ClaimState:
       required:
         - status
       type: object
       properties:
         status:
+          $ref: "#/components/schemas/ClaimStatus"
+        cancel_reason:
+          $ref: "#/components/schemas/CancelReason"
+    CourierInfo:
+      required:
+        - name
+        - phone
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя курьера
+        phone:
+          type: string
+          description: Телефон для связи
+        latitude:
+          type: number
+          format: double
+          description: Широта
+        longitude:
+          type: number
+          format: double
+          description: Долгота
+      description: |
+        Информация о курьере, который выполняет заказ. Заполняется только, если курьер уже был назначен.
+        Если курьер не был назначен или был снят с заказа - поле пустое.
+    Claim:
+      required:
+        - external_order_id
+        - items
+        - route_points
+      type: object
+      properties:
+        external_order_id:
+          type: string
+          description: |
+            Номер заказа в системе партнера, по которому курьер сможет получить его в магазине.
+        items:
+          $ref: "#/components/schemas/Items"
+        due_time:
+          $ref: "#/components/schemas/DateTime"
+        cooking_ready_time:
+          allOf:
+            - $ref: "#/components/schemas/DateTime"
+          description: "Планируемое время готовности заказа"
+        route_points:
+          type: array
+          description: Точки получения заказа и назначения.
+          minItems: 2
+          maxItems: 2
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/RoutePoint"
+        state:
+          $ref: "#/components/schemas/ClaimState"
+        courier_info:
+          $ref: "#/components/schemas/CourierInfo"
+        estimation:
+          $ref: "#/components/schemas/Estimation"
+        need_return:
+          description: "Нужна ли обратная доставка в случае, если заказ доставить не удалось"
+          type: boolean
+        need_drop_off_code:
+          description: "Нужен ли код подтверждения в точке Б"
+          type: boolean
+        need_pickup_code:
+          description: |
+            Нужен ли код подтверждения в точке A (курьер вводит код в приложении).
+            Если флаг не указан или передан со значением false, то код передается только в том случае,
+            если он указан в поле transfer_code для точки получения заказа. В таком случае курьер называет код вслух
+          type: boolean
+        is_bag_required:
+          description: "Нужен ли курьер с термо-сумкой"
+          type: boolean
+        leave_at_door:
+          description: "Оставить заказ у двери"
+          type: boolean
+          default: false
+        comment:
+          type: string
+          description: Комментарий к заказу
+        meta:
+          oneOf:
+            - $ref: "#/components/schemas/Meta"
+      example:
+        external_order_id: ORD-1
+        items:
+          weight: 1000
+          cost: 100
+        due_time: "2023-12-01T15:04:20Z"
+        route_points:
+          - address:
+              full_name: Москва, Садовническая набережная, 79
+              coordinates:
+                lat: 55.734511
+                lon: 37.641845
+              comment: Магазин
+            contact:
+              phone: "+78005553535"
+            transfer_code: "1234"
+            point_type: source
+          - address:
+              full_name: Москва, Таганская улица, 24с5
+              coordinates:
+                lat: 55.739792
+                lon: 37.661455
+              floor: "3"
+              flat: "10"
+              porch: A
+              door_code: 54В8228
+              comment: Оставьте у двери
+            contact:
+              name: Мариванна
+              phone: "+74954456372"
+              extra_phone: "+74954456373"
+            point_type: destination
+        comment: Заказ очень срочный
+        state:
+          status: cancelled_by_service
+          cancel_reason:
+            code: performer_not_found
+            message: "Не удалось найти курьера"
+
+        meta:
+          external_order_uuid: "5f2c5ffa-0736-4677-b203-0250e346e906"
+    ItemInfo:
+      description: "Информация о товаре"
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          description: "Название товара"
+          type: string
+          example: "молоко"
+        price:
+          description: "Цена товара в копейках"
+          type: integer
+          example: 10000
+          minimum: 0
+          maximum: 2147483647
+        width:
+          description: "Ширина товара в миллиметрах"
+          type: integer
+          example: 1000
+          minimum: 1
+        height:
+          description: "Высота товара в миллиметрах"
+          type: integer
+          example: 1000
+          minimum: 1
+        depth:
+          description: "Глубина товара в миллиметрах"
+          type: integer
+          example: 1000
+          minimum: 1
+    BatchItems:
+      description: "Информация по грузам."
+      type: object
+      required:
+        - weight
+      properties:
+        weight:
+          description: "Общий вес в граммах."
+          type: integer
+          minimum: 0
+          maximum: 100000
+          example: 1000
+        items_info:
+          description: "Список товаров."
+          type: array
+          items:
+            $ref: "#/components/schemas/BatchItemInfo"
+        cost:
+          description: "Стоимость в копейках."
+          type: integer
+          example: 250000
+          minimum: 0
+          maximum: 2147483647
+    BatchItemInfo:
+      allOf:
+        - $ref: "#/components/schemas/ItemInfo"
+        - type: object
+          required:
+            - route_point_id
+          properties:
+            route_point_id:
+              type: integer
+              description: "Идентификатор точки маршрута в пределах заказа"
+              example: 0
+    Items:
+      required:
+        - weight
+        - cost
+      type: object
+      properties:
+        weight:
+          type: integer
+          description: Общий вес в граммах.
+          example: 1000
+          minimum: 0
+          maximum: 100000
+        items_info:
+          description: "Список товаров."
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemInfo"
+        cost:
+          description: "Стоимость в копейках."
+          type: integer
+          example: 250000
+          minimum: 1
+          maximum: 2147483647
+      description: Информация по грузам.
+    Contact:
+      required:
+        - phone
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя или наименование организации
+          minLength: 2
+          example: Иван Иванов
+        phone:
+          type: string
+          description: |
+            Контактный телефон, через запятую, можно
+            указать добавочный номер, например:
+            +79123456789,1234
+          example: "88005553535"
+        extra_phone:
+          description: Дополнительный телефон
+          type: string
+          example: "+78005553535"
+    Estimation:
+      description: |
+        Результат оценки расстояния и стоимости доставки, а также ожидаемое времени доставки.
+        Заполняется только после расчета стоимости.
+      type: object
+      required:
+        - distance
+      properties:
+        distance:
+          description: "Расстояние в метрах"
+          type: integer
+          example: 10000
+        cost:
+          description: "Стоимость доставки в копейках"
+          type: integer
+          example: 250000
+        cost_with_vat:
+          description: "Стоимость доставки в копейках (с учетом НДС)"
+          type: integer
+          example: 250000
+        estimated_arrival:
+          type: string
+          description: "Ожидаемое время доставки в формате (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+          example: "2023-03-20T15:04:05Z"
+          format: date-time
+        expected_courier_arrival:
+          type: string
+          description: "Ожидаемое время прибытия курьера за заказом (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+          example: "2023-03-20T15:04:05Z"
+          format: date-time
+        pickup_eta:
+          type: string
+          description: "Ожидаемое время прибытия курьера за заказом (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+          example: "2023-03-20T15:04:05Z"
+          format: date-time
+        drop_off_eta:
+          type: string
+          description: "Ожидаемое время прибытия курьера на адрес доставки (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+          example: "2023-03-20T15:04:05Z"
+          format: date-time
+        final_cost:
+          description: "Финальная стоимость доставки в копейках"
+          type: integer
+          example: 350000
+        final_cost_with_vat:
+          description: "Финальная стоимость доставки в копейках (с учетом НДС)"
+          type: integer
+          example: 350000
+    RoutePointType:
+      type: string
+      description: |
+        Тип точки:
+        source - точка получения заказа
+        destination - точка, куда нужно доставить заказ
+      enum:
+        - source
+        - destination
+    RoutePoint:
+      required:
+        - address
+        - contact
+        - point_type
+      type: object
+      properties:
+        point_type:
+          $ref: "#/components/schemas/RoutePointType"
+        address:
+          $ref: "#/components/schemas/Address"
+        contact:
+          $ref: "#/components/schemas/Contact"
+        transfer_code:
+          $ref: "#/components/schemas/TransferCode"
+    Address:
+      required:
+        - coordinates
+        - full_name
+      type: object
+      properties:
+        full_name:
+          type: string
+          description: Полное название с указанием города
+          example: "Москва, Садовническая улица, 82с2"
+        coordinates:
+          $ref: "#/components/schemas/Coordinates"
+        floor:
+          type: string
+          description: Этаж
+          example: "6"
+        flat:
+          type: string
+          description: Квартира
+          example: "40"
+        porch:
+          type: string
+          description: Подъезд
+          example: "2"
+        door_code:
+          type: string
+          description: Код домофона
+          example: 54В8228
+        comment:
+          maxLength: 1000
+          type: string
+          description: Комментарий к адресу
+          example: "Как пройти, куда постучать"
+    Coordinates:
+      required:
+        - lat
+        - lon
+      type: object
+      properties:
+        lat:
+          type: number
+          example: 55.735616
+          minimum: -90
+          maximum: 90
+        lon:
+          type: number
+          example: 37.642384
+          minimum: -180
+          maximum: 180
+      description: Координаты точки
+    Meta:
+      description: |
+        Дополнительная информация по заказу. Например, можно передать название торговой сети.
+        Или внешний UUID заказа в системе партнера
+      type: object
+    DateTime:
+      type: string
+      description: "Дата/время в формате (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+      format: date-time
+      example: 2023-03-20T15:04:05Z
+    ClaimsEvent:
+      required:
+        - claim_id
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+        event_time:
+          $ref: "#/components/schemas/DateTime"
+        event:
+          oneOf:
+            - $ref: "#/components/schemas/ClaimsEventStatusChanged"
+    ClaimsEventStatusChanged:
+      required:
+        - new_status
+      type: object
+      properties:
+        new_status:
+          $ref: "#/components/schemas/ClaimStatus"
+        payload:
+          oneOf:
+            - $ref: "#/components/schemas/CourierInfo"
+            - $ref: "#/components/schemas/CancelReason"
+    CancelReason:
+      type: object
+      description: |
+        Причина отмены заявки
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          oneOf:
+            - $ref: "#/components/schemas/CancelByPartnerReasonCode"
+            - $ref: "#/components/schemas/CancelByServiceReasonCode"
+        message:
+          type: string
+          description: Описание причины отмены.
+    CancelByServiceReasonCode:
+      type: string
+      description: |
+        Код причины отмены сервисом:
+        - performer_not_found - не удалось найти курьера за отведенное время.
+        - out_of_delivery_zone - заказ за пределами зоны доставки.
+        - out_of_working_time - заказ создан в нерабочее время.
+        - too_high_delivery_distance - слишком большое расстояние между точкой пикапа и дроп офф.
+        - too_heavy_cargo - слишком тяжелый заказ.
+        - other - другая причина со свободным описанием.
+      enum:
+        - performer_not_found
+        - out_of_delivery_zone
+        - out_of_working_time
+        - too_high_delivery_distance
+        - too_heavy_cargo
+        - other
+    CancelByPartnerReason:
+      type: object
+      description: |
+        Причина отмены заявки партнером
+      required:
+        - code
+      properties:
+        code:
+          $ref: "#/components/schemas/CancelByPartnerReasonCode"
+        message:
+          type: string
+          description: Описание причины отмены.
+    CancelByPartnerReasonCode:
+      type: string
+      description: |
+        Код причины отмены партнером:
+
+        - long_wait_courier - долгое ожидание курьера
+        - cancelled_by_customer - клиент передумал
+        - courier_without_inventory - курьер без сумки
+        - customer_not_responding - клиента нет дома
+        - long_wait_order - долгое ожидание заказа
+        - pickup_point_closed - точка выдачи заказа закрыта
+        - other - другая причина со свободным описанием
+        - performer_not_found - не удалось найти курьера за время установленное партнером.
+      enum:
+        - long_wait_courier
+        - cancelled_by_customer
+        - courier_without_inventory
+        - customer_not_responding
+        - long_wait_order
+        - pickup_point_closed
+        - other
+        - performer_not_found
+    TransferCode:
+      type: string
+      description: |
+        Для точки с типом source - код для получения заказа в магазине (курьер называет код сборщику)
+        Для точки с типом destination - код для передачи заказ клиенту (пока не поддерживается)
+      example: "132443"
+    UpdateClaim:
+      type: object
+      required:
+        - claim_id
+        - route_points
+      properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+        route_points:
+          type: array
+          description: "Точки получения заказа и назначения."
+          minItems: 1
+          items:
+            type: object
+            required:
+              - point_type
+              - transfer_code
+            properties:
+              point_type:
+                $ref: "#/components/schemas/RoutePointType"
+              transfer_code:
+                type: string
+                description: |
+                  Для точки с типом source - код для получения заказа в магазине (курьер называет код сборщику)
+                  Для точки с типом destination - код для передачи заказ клиенту (клиент называет код курьеру из смс)
+                example: "132443"
+                maxLength: 8
+              address:
+                type: object
+                required:
+                  - comment
+                properties:
+                  comment:
+                    type: string
+                    example: "Как пройти, куда постучать"
+    SetReady:
+      type: object
+      required:
+        - claim_id
+        - ready_status
+      properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+        ready_status:
+          type: string
+          description: |
+            Выставить статус заказа:
+              start_processing - ресторан начал готовить заказ
+              ready_to_pickup - заказ готов к выыдаче
+              order_picked_up - заказ выдан курьеру
+          enum:
+            - start_processing
+            - ready_to_pickup
+            - order_picked_up
+      example:
+        claim_id: "5f2c5ffa-0736-4677-b203-0250e346e906"
+        ready_status: ready_to_pickup
+    UpdateClaimStatus:
+      type: object
+      required:
+        - claim_id
+        - status
+      properties:
+        claim_id:
+          $ref: "#/components/schemas/ClaimID"
+        status:
+          description: |
+            Статус обновления по конкретной заявке:
+              success - успешное обновление заявки
+              error - ошибка при обновлении
+          type: string
+          enum:
+            - success
+            - error
+    BatchRoutePoint:
+      allOf:
+        - $ref: "#/components/schemas/RoutePoint"
+        - type: object
+          required:
+            - id
+            - external_order_id
+          properties:
+            id:
+              type: integer
+              description: "Идентификатор точки маршрута в пределах заказа"
+              example: 0
+            external_order_id:
+              type: string
+              description: "Номер заказа из системы клиента. Передается для точки с типом destination"
+              example: "order-12345"
+    BatchEstimationDropOffETA:
+      type: object
+      required:
+        - claim_id
+        - eta
+      properties:
+        claim_id:
+          type: string
+          format: uuid
+        eta:
+          type: string
+          example: "2023-03-20T15:04:05Z"
+          format: date-time
+    BatchEstimation:
+      type: object
+      required:
+        - final_cost
+        - final_cost_vat
+      properties:
+        final_cost:
+          type: integer
+          description: "Финальная стоимость"
+          example: 10000
+        final_cost_vat:
+          type: integer
+          description: "Финальная стоимость с учетом НДС"
+          example: 10000
+        pickup_eta:
+          type: string
+          description: "Ожидаемое время прибытия курьера за заказом (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+          example: "2023-03-20T15:04:05Z"
+          format: date-time
+        drop_off_eta:
+          type: array
+          description: "Ожидаемое время прибытия курьера на адрес доставки (RFC3339 формат : %Y-%M-%DT%h:%m:%sZ)"
+          items:
+            $ref: "#/components/schemas/BatchEstimationDropOffETA"
+    Batch:
+      type: object
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: created
+          description: |
+            Статус маршрутной заявки:
+              - created - заявка создана
+              - estimated - заявка оцененна
+              - in_progress - заявка в процессе
+              - delivered_partially - заказ частично доставлен
+              - delivered - заказ доставлен
+              - cancelled - заявка отменена
           enum:
             - created
-            - accepted
-            - restaurant_cancelled
-            - customer_cancelled
-            - picked_up
+            - estimated
+            - in_progress
+            - delivered_partially
             - delivered
-            - on_the_way
-            - courier_cancelled
-            - cooking
-            - ready
-            - courier_is_close_to_restaurant
-            - courier_at_restaurant
+            - cancelled
+        estimation:
+          $ref: "#/components/schemas/BatchEstimation"
+        claims:
+          type: array
+          items:
+            $ref: "#/components/schemas/Claim"
+      example:
+        batch_id: "5f2c5ffa-0736-4677-b203-0250e346e906"
+        estimation:
+          final_cost: 20000
+          final_cost_vat: 20000
+          pickup_eta: "2023-12-01T14:30:00Z"
+          drop_off_eta:
+            - claim_id: "order-1"
+              eta: "2023-12-01T15:00:00Z"
+            - claim_id: "order-2"
+              eta: "2023-12-01T15:30:00Z"
+        claims:
+          - external_order_id: "order-1"
+            items:
+              weight: 1000
+              cost: 100
+            due_time: "2023-12-01T15:04:20Z"
+            route_points:
+              - address:
+                  full_name: Москва, Садовническая набережная, 79
+                  coordinates:
+                    lat: 55.734511
+                    lon: 37.641845
+                  comment: Магазин
+                contact:
+                  phone: "+78005553535"
+                transfer_code: "1234"
+                point_type: source
+                id: 1
+              - address:
+                  full_name: Москва, Таганская улица, 24с5
+                  coordinates:
+                    lat: 55.739792
+                    lon: 37.661455
+                  floor: "3"
+                  flat: "10"
+                  porch: A
+                  door_code: 54В8228
+                  comment: Оставьте у двери
+                contact:
+                  name: Мариванна
+                  phone: "+74954456372"
+                  extra_phone: "+74954456373"
+                point_type: destination
+                id: 2
+            comment: Заказ очень срочный
+            state:
+              status: cancelled_by_service
+              cancel_reason:
+                code: performer_not_found
+                message: "Не удалось найти курьера"
+            meta:
+              external_order_uuid: "5f2c5ffa-0736-4677-b203-0250e346e906"
+          - external_order_id: "order-2"
+            items:
+              weight: 1000
+              cost: 100
+            due_time: "2023-12-01T15:04:20Z"
+            route_points:
+              - address:
+                  full_name: Москва, Таганская улица, 24с5
+                  coordinates:
+                    lat: 55.739792
+                    lon: 37.661455
+                  floor: "3"
+                  flat: "10"
+                  porch: A
+                  door_code: 54В8228
+                  comment: Оставьте у двери
+                contact:
+                  name: Мариванна
+                  phone: "+74954456372"
+                  extra_phone: "+74954456373"
+                point_type: source
+                id: 2
+              - address:
+                  full_name: Шереметьевская улица, 7к2
+                  coordinates:
+                    lat: 55.795474
+                    lon: 37.614931
+                  floor: "3"
+                  flat: "10"
+                  porch: A
+                  door_code: 54В8228
+                  comment: Оставьте у двери
+                contact:
+                  name: Татьяна Шереметьевская
+                  phone: "+74954456223"
+                  extra_phone: "+74954456223"
+                point_type: destination
+                id: 3
+            comment: Заказ очень срочный
+            state:
+              status: cancelled_by_service
+              cancel_reason:
+                code: performer_not_found
+                message: "Не удалось найти курьера"
+            meta:
+              external_order_uuid: "5f2c5ffa-0736-4677-b203-0250e346e906"
+
+    BatchID:
+      type: string
+      format: uuid
+    OauthToken:
+      type: object
+      required:
+        - access_token
+        - expires_in
+        - scope
+        - token_type
+      properties:
+        access_token:
           type: string
-          description: "accepted - заказ принят, restaurant_cancelled - отменен рестораном, customer_cancelled - отменен клиентом, picked_up - произведен самовывоз, delivered - заказ доставлен, on_the_way - заказ готов и находится в пути, \r\n           courier_cancelled - отмена заказа курьером, courier_is_close_to_restaurant - курьер на подходе к ресторану, courier_at_restaurant - курьер в ресторане, ready - заказ готов, cooking - заказ готовится"
-        rejectingReason:
-          $ref: '#/components/schemas/RejectingReason'
-      additionalProperties: false
+          description: Токен аутентификации
+          example: eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyNmRhNjg0LTI5OGItNDRkYy1hYjM1LTkwZDQ4OWQ3MWUxOCIsInR5cCI6IkpXVCJ9.eyJhdWQiOltdLCJjbGllbnRfaWQiOiJkYThiOTUzYi1jNmNjLTRkODgtYTUzZi02MGUzYjBlOTY2MTUiLCJleHAiOjE3MDczOTc5MDIsImV4dCI6eyJmb28iOiJiYXIifSwiaWF0IjoxNzA3Mzk0MzAyLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjQ0NDQiLCJqdGkiOiIwNTdiYWQwMS05YmZjLTQyMTktYTYxMi00NWJjOWY0OWIxNzQiLCJuYmYiOjE3MDczOTQzMDIsInNjcCI6WyJvcGVuaWQiLCJvZmZsaW5lIl0sInN1YiI6ImRhOGI5NTNiLWM2Y2MtNGQ4OC1hNTNmLTYwZTNiMGU5NjYxNSJ9.LN5yR70uw2LlVvaEQC-9oHj0Rr4dtpfO42Ie5OTNmzJCJ40hbB0ncdeje6HrIkKTKbiCrJf-Dnb2j9XMa8ybLQDkqedBG4UN-oJUALeCUS2M6sj2sKAe7B7e_nkF5wz9cuqucR5mbfwa19_xmK517PbMTxX3ZRVuPhKVogNzUFMRSeiFABsXNYVLGB4H5plhP13L4_NkJ6XOzP_wnW207UYIQz2zT97WnhoUPTKQoRWaGw-_CFOtBV6p1oQieXXZIKJ0kJCOD_UVxj2Ume4iKtd4X71GtVnakuB9-JnC7nKZ4UIEYJZ8l70GS-6P1ztElcxE_Xp4xbgxjVQQLro6FiMAiVDwmpWm9aq6Q6uSM971ZZm476N7CUWvEazJ-Ydes-WI0w_scf5GTJIPyqTjYBYH1xrHjt3tjbv5wloUJcRIipeCZreGm8atop0y7YaihKM-AEaVr1-lg45HynDufIoO-hYKUQD48wpg-50gDTItenkMGkKPGkNFkiht80iau93v0g5P5S6AgI3EiW7SUakX5XFRVav5ggjl0BjVDlRZUjReUSbtTer4ShD3Ff_DHMMRzbElnj2vh9sp2UwTeHy_9pCoUiQFBzohAi7whTcydNZtLDAzBw51DWuhuiExZiqqJNoVezqVHMmSjUK4qxXk6YHULhna5KKSROnwJkU
+        expires_in:
+          type: integer
+          format: int64
+          description: Время жизни токена в секундах
+          example: 3599
+        scope:
+          type: string
+          description: Права доступа
+          example: openid last-mile:claims
+        token_type:
+          type: string
+          description: Тип токена
+          example: bearer
+    OauthRequest:
+      type: object
+      required:
+        - client_id
+        - client_secret
+        - scope
+        - grant_type
+      properties:
+        client_id:
+          type: string
+          description: "Идентификатор клиента"
+          example: da8b953b-c6cc-4d88-a53f-60e3b0e96615
+        client_secret:
+          type: string
+          description: "Секрет"
+          example: 525348e77144a9cee9a7471a8b67c50ea85b9e3eb377a3c1a3a23db88f9150eefe76e6a3
+        scope:
+          type: string
+          description: "Права доступа. Разделитель - пробел"
+          example: openid last-mile:claims
+        grant_type:
+          type: string
+          description: "Тип доступа"
+          example: client_credentials
+          default: client_credentials
+    OauthError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: "Код ошибки, кратко описывающий ее причину"
+          example: invalid_client
+        error_description:
+          type: string
+          description: "Детальное описание ошибки"
+          example: Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method).
+        message:
+          type: string
+          description: "Системное сообщение"
+    PretensionType:
+      type: string
+      enum:
+        - not_all_goods
+        - temperature_violation
+        - late_delivery
+        - courier_complaint
+        - packaging_violation
+        - goods_violation
+        - not_delivered
+        - not_my_order
+      description: |
+        Тема претензии, выбирается из списка:
+          not_all_goods - Количество товаров, указанных в заказе, не соответствует чеку;
+          temperature_violation - Заказ был доставлен с нарушением температурного режима;
+          late_delivery - Несвоевременная доставка заказа курьерской службой;
+          courier_complaint - Жалоба на курьера: грубость, хамство, отказался поднимать товар на этаж и пр;
+          packaging_violation - Качество упаковки, нарушение целостности упаковки, развакуум;
+          goods_violation - Мятый, грязный товар;
+          not_delivered - Заказ не доставлен покупателю;
+          not_my_order - Привезли чужой заказ;
   securitySchemes:
-    Bearer:
-      type: apiKey
-      description: 'Нужен постоянный токен авторизации. Authorization needed to access the endpoints. Authorization: Bearer {token}'
-      name: Authorization
-      in: header
-security:
-  - Bearer: []
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

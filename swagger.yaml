@@ -756,7 +756,7 @@ components:
       type: object
       properties:
         name:
-          description: "ФИО клиента"
+          description: "имя клиента"
           example: "Петр"
           maxLength: 64
           minLength: 0

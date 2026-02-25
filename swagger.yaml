@@ -3,7 +3,10 @@ info:
   title: api-vitrina
   version: v1
 servers:
-  - url: https://black.hole
+  - url: https://b2b-api-gateway.uat.ya.magnit.ru/api/
+    description: Демо сервер для проведения тестирования интеграции.
+  - url: https://b2b-api.magnit.ru/api/
+    description: Основной сервер интеграции.
 paths:
   /api/v1/Blocks/list:
     get:
@@ -647,7 +650,7 @@ components:
           type: string
         phone:
           description: "Контактный телефон курьера. Сейчас передается телефон коллцентра, позже будет подменный номер клиента"
-          example: "Петр"
+          example: "88005553535"
           maxLength: 16
           minLength: 0
           type: string

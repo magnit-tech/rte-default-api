@@ -115,7 +115,7 @@ paths:
       parameters:
         - name: restaurantId
           in: path
-          description: "Идентификатор ресторана"
+          description: 'Идентификатор ресторана'
           required: true
           schema:
             type: string
@@ -143,14 +143,14 @@ paths:
       parameters:
         - name: restaurantId
           in: path
-          description: "Идентификатор ресторана в системе партнера"
+          description: 'Идентификатор ресторана в системе партнера'
           required: true
           schema:
             type: string
           example: '74013271'
         - name: orderId
           in: path
-          description: "Идентификатор заказа в системе партнера"
+          description: 'Идентификатор заказа в системе партнера'
           example: "o111222333"
           required: true
           schema:
@@ -199,14 +199,14 @@ paths:
       parameters:
         - name: restaurantId
           in: path
-          description: "Идентификатор ресторана в системе партнера"
+          description: 'Идентификатор ресторана в системе партнера'
           required: true
           schema:
             type: string
           example: '74013271'
         - name: orderId
           in: path
-          description: "Идентификатор заказа в системе партнера"
+          description: 'Идентификатор заказа в системе партнера'
           example: "o111222333"
           required: true
           schema:
@@ -644,13 +644,13 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор блюда"
+          description: 'Идентификатор блюда'
           example: "27973"
         categoryId:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор категории"
+          description: 'Идентификатор категории'
           example: "a10"
         order:
           type: integer
@@ -705,7 +705,7 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор заказа созданный на стороне агрегатора"
+          description: 'Идентификатор заказа созданный на стороне агрегатора'
         preOrder:
           type: boolean
         createdAt:
@@ -834,7 +834,7 @@ components:
           description: "Признак подакцизного ингредиента"
         productId:
           type: string
-          description: "Идентификатор продукта, к которому привязана группа ингредиентов"
+          description: 'Идентификатор продукта, к которому привязана группа ингредиентов'
           example: "27973"
       additionalProperties: false
     Ingredient:
@@ -932,7 +932,7 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор ингредиента"
+          description: 'Идентификатор ингредиента'
           example: "i25"
         name:
           maxLength: 256
@@ -970,7 +970,7 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор блюда"
+          description: 'Идентификатор блюда'
         name:
           maxLength: 256
           minLength: 0
@@ -992,7 +992,7 @@ components:
           maxLength: 40
           minLength: 0
           type: string
-          description: "Идентификатор промоакции (пока не используется)"
+          description: 'Идентификатор промоакции (пока не используется)'
         ingredients:
           type: array
           description: "Выбранные ингредиенты для блюд заказа"
@@ -1069,7 +1069,7 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор заказа"
+          description: 'Идентификатор заказа'
         status:
           $ref: '#/components/schemas/OrderStatus'
         shortCode:
@@ -1186,7 +1186,7 @@ components:
           minLength: 0
           type: string
           example: "a10"
-          description: "Идентификатор категории ссылающийся на id категории в структуре Category"
+          description: 'Идентификатор категории ссылающийся на id категории в структуре Category'
         name:
           maxLength: 256
           minLength: 0
@@ -1318,7 +1318,7 @@ components:
           maxLength: 128
           minLength: 0
           type: string
-          description: "Идентификатор сущности для блокировки"
+          description: 'Идентификатор сущности для блокировки'
         name:
           maxLength: 256
           minLength: 0

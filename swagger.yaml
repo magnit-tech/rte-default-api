@@ -271,7 +271,7 @@ paths:
       parameters:
         - name: restaurantId
           in: path
-          description: "Уникальный 'ID ресторана"
+          description: "Уникальный ID ресторана"
           required: true
           schema:
             type: string

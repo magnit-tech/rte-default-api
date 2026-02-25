@@ -1,3 +1,2 @@
-
-# Last Mile OMS service API
+# RTE API
 

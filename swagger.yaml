@@ -1274,25 +1274,25 @@ components:
           maxLength: 64
           minLength: 0
           type: string
-          description: Код отмены, строка
+          description: 'Код отмены, строка'
         message:
           maxLength: 4096
           minLength: 0
           type: string
-          description: Информация об отмене заказа
+          description: 'Информация об отмене заказа'
           nullable: true
         unavailableProductIds:
           type: array
           items:
             type: string
-          description: ИД недоступных продуктов
+          description: 'ИД недоступных продуктов'
         unavailableIngredientIds:
           type: array
           items:
             type: string
-          description: ИД недоступных модификаторов
+          description: 'ИД недоступных модификаторов'
       additionalProperties: false
-      description: Причина отмены заказа
+      description: 'Причина отмены заказа'
     Response:
       type: object
       properties:

@@ -1,7 +1,9 @@
 openapi: 3.0.1
 info:
   title: api-vitrina
-  version: v1
+  description: Last Mile OMS service API
+  contact: { }
+  version: 0.5.5
 servers:
   - url: https://b2b-api-gateway.uat.ya.magnit.ru/api/
     description: Демо сервер для проведения тестирования интеграции.

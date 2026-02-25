@@ -301,8 +301,8 @@ paths:
                   name: Баскет Дуэт с острыми стрипсами
                   price: 409
                   quantity: 1
-                  ingredients: [ ]
-              promotions: [ ]
+                  ingredients: []
+              promotions: []
               comment: Customer comment
               price:
                 total: 409

@@ -199,6 +199,285 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+    put:
+      tags:
+        - Orders
+      summary: ''
+      parameters:
+        - name: restaurantId
+          in: path
+          description: "Идентификатор ресторана в системе партнера"
+          required: true
+          schema:
+            type: string
+          example: '74013271'
+        - name: orderId
+          in: path
+          description: "Идентификатор заказа в системе партнера"
+          example: "o111222333"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrder'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrder'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrder'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrder'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderWithId'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithId'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithId'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/Orders/{restaurantId}:
+    post:
+      tags:
+        - Orders
+      summary: "Метод создания заказа в ресторане"
+      parameters:
+        - name: restaurantId
+          in: path
+          description: "Уникальный идентификатор ресторана"
+          required: true
+          schema:
+            type: string
+          example: '74013271'
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+            example:
+              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
+              preOrder: false
+              createdAt: '2024-07-04T15:41:36.7495617Z'
+              customer:
+                name: Customer Name
+                phone: '+71111111111'
+                email: test@test.test
+              payment:
+                type: online
+              expeditionType: pickup
+              pickup:
+                expectedTime: '2024-07-04T16:11:36.7498005Z'
+                taker: courier
+              products:
+                - id: '9000903'
+                  name: Баскет Дуэт с острыми стрипсами
+                  price: 409
+                  quantity: 1
+                  ingredients: [ ]
+              promotions: [ ]
+              comment: Customer comment
+              price:
+                total: 409
+                deliveryFee: 149
+                discount: 0
+              personsQuantity: 1
+              callCenter:
+                phone: CallCenter Phone
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+            example:
+              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
+              preOrder: false
+              createdAt: '2024-07-04T15:41:36.7495617Z'
+              customer:
+                name: Customer Name
+                phone: '+71111111111'
+                email: test@test.test
+              payment:
+                type: online
+              expeditionType: pickup
+              pickup:
+                expectedTime: '2024-07-04T16:11:36.7498005Z'
+                taker: courier
+              products:
+                - id: '9000903'
+                  name: Баскет Дуэт с острыми стрипсами
+                  price: 409
+                  quantity: 1
+                  ingredients: [ ]
+              promotions: [ ]
+              comment: Customer comment
+              price:
+                total: 409
+                deliveryFee: 149
+                discount: 0
+              personsQuantity: 1
+              callCenter:
+                phone: CallCenter Phone
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+            example:
+              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
+              preOrder: false
+              createdAt: '2024-07-04T15:41:36.7495617Z'
+              customer:
+                name: Customer Name
+                phone: '+71111111111'
+                email: test@test.test
+              payment:
+                type: online
+              expeditionType: pickup
+              pickup:
+                expectedTime: '2024-07-04T16:11:36.7498005Z'
+                taker: courier
+              products:
+                - id: '9000903'
+                  name: Баскет Дуэт с острыми стрипсами
+                  price: 409
+                  quantity: 1
+                  ingredients: [ ]
+              promotions: [ ]
+              comment: Customer comment
+              price:
+                total: 409
+                deliveryFee: 149
+                discount: 0
+              personsQuantity: 1
+              callCenter:
+                phone: CallCenter Phone
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+            example:
+              originalOrderId: 86c48784-b7af-4b66-8c05-348005d38a1a
+              preOrder: false
+              createdAt: '2024-07-04T15:41:36.7495617Z'
+              customer:
+                name: Customer Name
+                phone: '+71111111111'
+                email: test@test.test
+              payment:
+                type: online
+              expeditionType: pickup
+              pickup:
+                expectedTime: '2024-07-04T16:11:36.7498005Z'
+                taker: courier
+              products:
+                - id: '9000903'
+                  name: Баскет Дуэт с острыми стрипсами
+                  price: 409
+                  quantity: 1
+                  ingredients: [ ]
+              promotions: [ ]
+              comment: Customer comment
+              price:
+                total: 409
+                deliveryFee: 149
+                discount: 0
+              personsQuantity: 1
+              callCenter:
+                phone: CallCenter Phone
+      responses:
+        '201':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrderWithId'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithId'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithId'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/RejectingReason'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RejectingReason'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/RejectingReason'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/StopLists/{restaurantId}:
+    get:
+      tags:
+        - StopLists
+      summary: "Стоплисты для блюд. Даже если блюдо находится в стоплисте, его необходимо передавай в основном меню"
+      parameters:
+        - name: restaurantId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '74013271'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Response'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+
 
 components:
   schemas:

@@ -330,7 +330,7 @@ paths:
                 taker: courier
               products:
                 - id: '9000903'
-                  name: Баскет Дуэт с острыми стрипсами
+                  name: 'Баскет Дуэт с острыми стрипсами'
                   price: 409
                   quantity: 1
                   ingredients: []
@@ -362,7 +362,7 @@ paths:
                 taker: courier
               products:
                 - id: '9000903'
-                  name: Баскет Дуэт с острыми стрипсами
+                  name: 'Баскет Дуэт с острыми стрипсами'
                   price: 409
                   quantity: 1
                   ingredients: []
@@ -394,7 +394,7 @@ paths:
                 taker: courier
               products:
                 - id: '9000903'
-                  name: Баскет Дуэт с острыми стрипсами
+                  name: 'Баскет Дуэт с острыми стрипсами'
                   price: 409
                   quantity: 1
                   ingredients: []

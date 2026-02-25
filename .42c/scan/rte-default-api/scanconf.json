@@ -477,16 +477,11 @@
 	"environments": {
 		"default": {
 			"variables": {
-				"bearerAuth": {
-					"from": "environment",
-					"name": "SCAN42C_SECURITY_BEARERAUTH",
-					"required": true
-				},
 				"host": {
 					"from": "environment",
 					"name": "SCAN42C_HOST",
 					"required": false,
-					"default": "https://b2b-api-gateway.uat.ya.magnit.ru/api"
+					"default": "https://black.hole/api"
 				}
 			}
 		}

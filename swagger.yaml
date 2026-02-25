@@ -1,14 +1,9 @@
 openapi: 3.0.1
 info:
-  title: Last Mile OMS service API
-  description: Last Mile OMS service API
-  contact: {}
-  version: 0.5.5
+  title: api-vitrina
+  version: v1
 servers:
-  - url: https://b2b-api-gateway.uat.ya.magnit.ru/api/
-    description: Демо сервер для проведения тестирования интеграции.
-  - url: https://b2b-api.magnit.ru/api/
-    description: Основной сервер интеграции.
+  - url: https://black.hole
 paths:
   /api/v1/Blocks/list:
     get:

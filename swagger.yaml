@@ -1279,7 +1279,7 @@ components:
           maxLength: 4096
           minLength: 0
           type: string
-          description: 'Информация об отмене заказа'
+          description: 'Данные об отмене заказа'
           nullable: true
         unavailableProductIds:
           type: array

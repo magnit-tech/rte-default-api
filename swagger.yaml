@@ -756,14 +756,14 @@ components:
       type: object
       properties:
         name:
-          description: "Имя клиента"
-          example: "Игорь"
+          description: "ФИО клиента"
+          example: "Петр"
           maxLength: 64
           minLength: 0
           type: string
         phone:
           description: "Контактный телефон курьера. Сейчас передается телефон коллцентра, позже будет подменный номер клиента"
-          example: "Игорь"
+          example: "Петр"
           maxLength: 16
           minLength: 0
           type: string
@@ -1285,12 +1285,12 @@ components:
           type: array
           items:
             type: string
-          description: 'ИД недоступных продуктов'
+          description: 'ID недоступных продуктов'
         unavailableIngredientIds:
           type: array
           items:
             type: string
-          description: 'ИД недоступных модификаторов'
+          description: 'ID недоступных модификаторов'
       additionalProperties: false
       description: 'Причина отмены заказа'
     Response:

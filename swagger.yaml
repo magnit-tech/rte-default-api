@@ -1094,12 +1094,9 @@ components:
       properties:
         type:
           enum:
-            - cash
-            - card
             - online
-            - prepay
           type: string
-          description: "cash - оплата наличными,\r\ncard - оплата картой,\r\nonline - онлайн оплата,\r\nprepay - предоплата"
+          description: "online - онлайн оплата"
         requiredMoneyChange:
           maxLength: 8
           minLength: 0

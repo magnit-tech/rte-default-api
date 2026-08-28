@@ -1261,6 +1261,14 @@ components:
           type: boolean
           description: "Признак подакцизного товара"
           example: false
+        isFSARequired:
+          type: boolean
+          description: "Признак необходимости сертификата соответствия товара"
+          example: false
+        FSADocs:
+          type: string
+          description: "Ссылка на сертификат соответствия"
+          example: "https://pub.fsa.gov.ru/rss/certificate/view/3720172/baseInfo"
       additionalProperties: false
     RejectingReason:
       required:

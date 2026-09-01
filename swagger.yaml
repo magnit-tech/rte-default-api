@@ -836,6 +836,21 @@ components:
           type: string
           description: "Идентификатор продукта, к которому привязана группа ингредиентов"
           example: "27973"
+        minAmount:
+          type: integer
+          format: int32
+          description: "Минимальное количество выбранного ингрдиента"
+          example: 1
+        maxAmount:
+          type: integer
+          format: int32
+          description: "Максимальное количество выбранного ингредиента"
+          example: 10
+        defaultAmount:
+          type: integer
+          format: int32
+          description: "Количество выбранного ингредиента по умолчанию"
+          example: 2
       additionalProperties: false
     Ingredient:
       required:
@@ -866,6 +881,21 @@ components:
           description: "Ставка НДС (0, 5, 7, 10, 20 (deprecated), 22). Если не будет передана, то унаследуется от блюда к которому привязан ингредиент"
           format: int32
           example: 10
+        minAmount:
+          type: integer
+          format: int32
+          description: "Минимальное количество выбранного ингредиента"
+          example: 1
+        maxAmount:
+          type: integer
+          format: int32
+          description: "Максимальное количество выбранного ингредиента"
+          example: 10
+        defaultAmount:
+          type: integer
+          format: int32
+          description: "Количество выбранного ингредиента по умолчанию"
+          example: 2
       additionalProperties: false
     IngredientsGroup:
       required:
@@ -880,6 +910,16 @@ components:
           type: string
           description: "Название группы ингредиентов"
           example: "Топпинги"
+        minAmount:
+          type: integer
+          format: int32
+          description: "Минимальное количество выбранных ингредиентов в рамках группы"
+          example: 1
+        maxAmount:
+          type: integer
+          format: int32
+          description: "Максимальное количество выбранных ингредиентов в рамках группы"
+          example: 10
         ingredients:
           type: array
           items:

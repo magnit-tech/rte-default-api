@@ -753,8 +753,13 @@ components:
     Customer:
       required:
         - name
+        - id
       type: object
       properties:
+        id:
+          description: "Идентификатор клиента"
+          example: "66cf31c4-7ff7-41c8-982a-911271098c14"
+          type: string
         name:
           description: "Имя клиента"
           example: "Игорь"
